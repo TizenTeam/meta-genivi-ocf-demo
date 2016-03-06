@@ -1,0 +1,24 @@
+RVI OIC Gateway
+---------------
+Temporary module to realize the Genivi OIC demo.
+Performs translation from OIC to RVI and vice versa.
+Implements a minimalistic rule engine via SQLite.
+Hosts RVI controls as OIC resources.
+Aggregation of OIC responses.
+Propagation of responses across RVI and OIC
+
+Pre-requisites
+--------------
+1. export RVIDIR=<path to RVI folder>
+2. export OICDIR=<path to IoTivity folder>
+3. Build iotivity library and RVI service.
+4. sudo apt-get install libcurl4-openssl-dev sqlite3-dev
+
+Working
+-------
+
+
+TODO
+----
+RESTful interface for RVI Node.
+

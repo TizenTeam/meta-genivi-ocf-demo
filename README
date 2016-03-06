@@ -1,40 +1,45 @@
-This is a bunch of information that was useful during development.
-We will organize this as we go.
+For IoTivity 
+------------
+export OCTBSTACK_LIBS="-L$HOME/GeniviDemo/iotivity/out/linux/x86_64/release -loctbstack -Wl,-rpath=$HOME/GeniviDemo/iotivity/out/linux/x86_64/release"
+export OCTBSTACK_CFLAGS="-I$HOME/GeniviDemo/iotivity/resource/csdk/stack/include -I$HOME/GeniviDemo/iotivity/resource/c_common -I$HOME/GeniviDemo/iotivity/resource/c_common/ocrandom/include"
 
-export OCTBSTACK_LIBS="-L/home/sanjeev/source/iot/iotivity/out/linux/x86_64/release -loctbstack -Wl,-rpath=/home/sanjeev/source/iot/iotivity/out/linux/x86_64/release"
-export OCTBSTACK_CFLAGS="-I/home/sanjeev/source/iot/iotivity/resource/csdk/stack/include -I/home/sanjeev/source/iot/iotivity/resource/c_common -I/home/sanjeev/source/iot/iotivity/resource/c_common/ocrandom/include"
+Android Build for IoTivity
+--------------------------
+scons TARGET_OS=android TARGET_ARCH=armeabi-v7a ANDROID_GRADLE=$HOME/android-studio/gradle/gradle-2.8/bin/gradle ANDROID_HOME=$HOME/Android/Sdk ANDROID_NDK=$HOME/android-ndk/
 
+RVI Testing(Remote)
+-------------------
 ssh -p1066 rvi@rvi-test3.nginfotpdx.net 
 scp -P1066 <file> rvi@rvi-test3.nginfotpdx.net:
 
-192.168.0.37 - Gear S2
-1.0#fhdPdDC8wSsiucTCSgR+FTtHQOI= - device ID
-
-curl -Lo .git/hooks/commit-msg https://gerrit.iotivity.org/gerrit/tools/hooks/commit-msg
-
-scons TARGET_OS=android ANDROID_GRADLE=/home/sanjeev/bin/android-studio/gradle ANDROID_HOME=/home/sanjeev/Android/Sdk ANDROID_NDK=/home/sanjeev/bin/android-ndk/  
-scons TARGET_OS=android TARGET_ARCH=armeabi-v7a ANDROID_GRADLE=/home/sanjeev/bin/android-studio/gradle/gradle-2.8/bin/gradle ANDROID_HOME=/home/sanjeev/Android/Sdk ANDROID_NDK=/home/sanjeev/bin/android-ndk/
-
-90-9F-33-12-61-6C
-90-9F-33-12-61-6D
+RVI Repositories
+----------------
 https://github.com/PDXostc/rvi_core 
 https://github.com/PDXostc/rvi_core/tree/master/doc
 
-RVI does not actually spin up an outward facing HTTP server to handle incoming requests. To communicate with 2 different devices using RVI you would need to have a RVI node on each device and then have those 2 nodes connect to each other. These 2 nodes will then register services with each other which can then be called by sending an JSON-RPC HTTP command to the local RVI node running which will then forward the request to the remote node if it has the permission to call that service. Both nodes will have access to their own RVI services as well as the other node's services if they have the correct permissions.
-
-In short you can write the standalone process written in C that issues HTTP request but it would issue HTTP request to the local RVI node which would then forward that command to the RVI node in the vehicle. 
-
-
 sudo vi /etc/apt/sources.list
+Add 'deb http://packages.erlang-solutions.com/ubuntu trusty contrib'
 sudo apt-get update
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D208507CA14F4FCA
+Key Server Error : sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys HEX
 sudo apt-get update
 sudo apt-get install esl-erlang python-jsonrpclib
-
 cd rvi_core
 make
 
+Quick Test
+----------
+Pick up deb file from https://github.com/PDXostc/rvi_core/releases
+sudo dpkg -i rvi_0.5.0-1ubuntu1_amd64.deb
 
-
-
+Register an RVI Service
 /usr/lib/rvi_core/rvi_service hello
+Result
+genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello
+
+Invoke the service from another terminal
+/usr/lib/rvi_core/rvi_call genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello
+
+TODO
+----
+
+RESTful API interface to RVI Local Node.
