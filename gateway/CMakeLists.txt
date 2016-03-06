@@ -19,7 +19,7 @@ file(GLOB_RECURSE SRCS
 )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(gateway REQUIRED libcurl glib-2.0 openssl eina eet ecore json-glib-1.0)
+pkg_check_modules(gateway REQUIRED libcurl glib-2.0 openssl eina eet ecore json-glib-1.0 sqlite3)
 
 FOREACH(flag ${gateway_CFLAGS})
 	SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")

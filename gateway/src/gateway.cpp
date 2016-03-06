@@ -1,5 +1,6 @@
 #include "gateway.h"
 #include <string>
+#include <sqlite3.h>
 
 extern void *client_thread(void *data);
 extern void *server_thread(void *data);
