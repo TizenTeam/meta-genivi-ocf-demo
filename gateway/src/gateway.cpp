@@ -84,7 +84,7 @@ sm_error sm_destroy_session(sm_session_handle sHandle){
 
     SM_INF("Output of pthread_join = %d", ret);
 
-    //Properties::removeInstance();
+    properties::removeInstance();
     if(s){
         SM_FREE(s);
         s=NULL;
@@ -393,6 +393,7 @@ sm_session_handle sm_create_session(const char *rvi)
 {
     sm_session *session = NULL;
     SM_CALLOC(session , 1, sm_session);
+    properties::getInstance()->load();
 
     session->mh = curl_multi_init();
     if(!session->mh){
@@ -411,8 +412,8 @@ sm_session_handle sm_create_session(const char *rvi)
     {
         //create a thread to handle this session.
         ret = pthread_create(&session->thread, NULL, session_thread, session);
-        ret = pthread_create(&session->client, NULL, client_thread, session);
-        ret = pthread_create(&session->server, NULL, server_thread, session);
+        //ret = pthread_create(&session->client, NULL, client_thread, session);
+        //ret = pthread_create(&session->server, NULL, server_thread, session);
 
         if(ret)
         {
@@ -425,8 +426,8 @@ sm_session_handle sm_create_session(const char *rvi)
             return NULL;
         }
 
-        //Properties::setSessionReference((void *)session);
-        //Properties::getInstance()->save();
+        properties::setSessionReference((void *)session);
+        properties::getInstance()->save();
 
         SM_INF("Returning Session Object %p", session);
         return session;

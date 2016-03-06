@@ -11,11 +11,12 @@
 #include <Ecore.h>
 #include <Eina.h>
 #include <Eet.h>
-#include "debugger.h"
 #include <curl/curl.h>
 #include <unistd.h>
 #include <string>
 #include <assert.h>
+#include "debugger.h"
+#include "properties.h"
 
 using namespace std;
 
