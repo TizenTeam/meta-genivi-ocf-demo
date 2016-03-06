@@ -24,12 +24,12 @@ sm_session_handle session;
 
 const char * getRestUrl(RequestType type)
 {
-	switch(type)
-	{
-		case SM_REQUEST_TEST:
-                    return "http://localhost:9091/";
-			//return PROPGET(CATALOGURL).c_str();
-	}
+    switch(type)
+    {
+        case SM_REQUEST_TEST:
+            return "http://localhost:9091/";
+            //return PROPGET(CATALOGURL).c_str();
+    }
 
 }
 
@@ -100,9 +100,9 @@ void complete_cb(sm_request_handle rHandle, void *data){
     int next = 0;
     switch (next) {
         case SM_REQUEST_TEST:{
-                                      SM_DBG("SM_REQUEST_TEST");
-                                  }
-                                  break;
+                                 SM_DBG("SM_REQUEST_TEST");
+                             }
+                             break;
 
     }
     SM_DBG("-----Data Check End---------------");
@@ -129,9 +129,9 @@ void do_request(int req, void *d)
     switch(req) {
 
         case SM_REQUEST_TEST:{
-                                      request = sm_create_test(session, complete_cb);
-                                  }
-                                  break;
+                                 request = sm_create_test(session, complete_cb);
+                             }
+                             break;
 
         case SM_REQUEST_SESSION_CLOSE:{
                                           sm_destroy_session(session);
@@ -171,20 +171,20 @@ void * sm_get_request_appdata(sm_request_handle rHandle) {
 
 sm_error sm_cancel_request(sm_request_handle rHandle, int call_callback_func)
 {
-	if (!rHandle) {
+    if (!rHandle) {
         return SM_ERROR_INVALID_PARAMETER;
     }
-	sm_request *req = (sm_request *)rHandle;
+    sm_request *req = (sm_request *)rHandle;
     sm_request *r = request_alloc_handle(req->sHandle, SM_REQUEST_CANCEL, NULL);
     sm_set_request_appdata(r, rHandle);
     return sm_start_request(r);
 }
 
 sm_error sm_destroy_request(sm_request_handle rHandle) {
-	if (!rHandle) {
+    if (!rHandle) {
         return SM_ERROR_INVALID_PARAMETER;
     }
-	sm_request *req = (sm_request *)rHandle;
+    sm_request *req = (sm_request *)rHandle;
     sm_request *r = request_alloc_handle(req->sHandle, SM_REQUEST_DESTROY, NULL);
     sm_set_request_appdata(r, rHandle);
     return sm_start_request(r);
@@ -289,47 +289,47 @@ static void *session_thread(void *data)
                     if(r->req)
                     {
                         if(r->req->reqType==SM_REQUEST_CANCEL || r->req->reqType==SM_REQUEST_DESTROY){
-                        	sm_request *hdl = (sm_request *)(sm_get_request_appdata(r));
+                            sm_request *hdl = (sm_request *)(sm_get_request_appdata(r));
                             if(hdl && hdl->req){
-                            	SM_INF("Canceled Request %p", hdl->req);
-                            	if(hdl->req->eh) curl_multi_remove_handle(s->mh, hdl->req->eh);
-                            	hdl->pCallback = NULL; // don't callback.
+                                SM_INF("Canceled Request %p", hdl->req);
+                                if(hdl->req->eh) curl_multi_remove_handle(s->mh, hdl->req->eh);
+                                hdl->pCallback = NULL; // don't callback.
                             }
 
                             if(r->req->reqType==SM_REQUEST_DESTROY)
-                        	{
-                        		delete hdl->req;
-                        		hdl->req = NULL;
-                        	}
-                        	SM_FREE(hdl);
-                        	r->status = SM_ERROR_NONE;
-                        	continue;
+                            {
+                                delete hdl->req;
+                                hdl->req = NULL;
+                            }
+                            SM_FREE(hdl);
+                            r->status = SM_ERROR_NONE;
+                            continue;
                         }
 
-						//int nRet = r->req->start(&ptr);
+                        //int nRet = r->req->start(&ptr);
                         int nRet = 0;
-						SM_DBG("update_request result: %d New Curl Handle = %p", nRet, ptr);
+                        SM_DBG("update_request result: %d New Curl Handle = %p", nRet, ptr);
 
-						if (nRet==0){
-							if(ptr){ //successful network request
-								curl_easy_setopt(ptr, CURLOPT_PRIVATE, r);
-								curl_multi_add_handle(s->mh, ptr);
-								SM_INF("Queued for processing %p", ptr);
-							}else{ //successful local cache load - success but curl handle is null.
-								SM_DBG("Response Loaded from Local Cache");
-								r->status = SM_ERROR_NONE;
-								//if(isAriaReq) write_response(s, (sm_request *)sd.rHandle);
-								write_response(s, (sm_request *)sd.rHandle);
-								continue;
-							}
-						}else{
-							r->status = SM_ERROR_OPERATION_FAILED;
-							write_response(s, (sm_request *)sd.rHandle);
-							continue;
-						}
+                        if (nRet==0){
+                            if(ptr){ //successful network request
+                                curl_easy_setopt(ptr, CURLOPT_PRIVATE, r);
+                                curl_multi_add_handle(s->mh, ptr);
+                                SM_INF("Queued for processing %p", ptr);
+                            }else{ //successful local cache load - success but curl handle is null.
+                                SM_DBG("Response Loaded from Local Cache");
+                                r->status = SM_ERROR_NONE;
+                                //if(isAriaReq) write_response(s, (sm_request *)sd.rHandle);
+                                write_response(s, (sm_request *)sd.rHandle);
+                                continue;
+                            }
+                        }else{
+                            r->status = SM_ERROR_OPERATION_FAILED;
+                            write_response(s, (sm_request *)sd.rHandle);
+                            continue;
+                        }
                     }else{
-                    	SM_DBG("Request Object is Null.");
-                    	continue;
+                        SM_DBG("Request Object is Null.");
+                        continue;
                     }
                 }
             }
@@ -443,7 +443,7 @@ sm_session_handle sm_get_session(sm_request_handle rHandle){
     return pReq->sHandle;
 }
 
-static Eina_Bool
+    static Eina_Bool
 _fd_handler_cb(void *data, Ecore_Fd_Handler *handler)
 {
     size_t nbytes = 0;

@@ -40,13 +40,13 @@ std::mutex curResourceLock;
 
 class Light
 {
-public:
+    public:
 
-    bool m_state;
-    int m_power;
-    std::string m_name;
+        bool m_state;
+        int m_power;
+        std::string m_name;
 
-    Light() : m_state(false), m_power(0), m_name("")
+        Light() : m_state(false), m_power(0), m_name("")
     {
     }
 };
@@ -60,7 +60,7 @@ int observe_count()
 }
 
 void onObserve(const HeaderOptions /*headerOptions*/, const OCRepresentation& rep,
-                    const int& eCode, const int& sequenceNumber)
+        const int& eCode, const int& sequenceNumber)
 {
     try
     {
@@ -426,7 +426,7 @@ void checkObserverValue(int value)
     else
     {
         std::cout << "<===Invalid ObserveType selected."
-                  <<" Setting ObserveType to Observe===>\n\n";
+            <<" Setting ObserveType to Observe===>\n\n";
     }
 }
 
@@ -442,11 +442,11 @@ void *client_thread(void *data)
     // Create PlatformConfig object
     PlatformConfig cfg {
         OC::ServiceType::InProc,
-        OC::ModeType::Both,
-        "0.0.0.0",
-        0,
-        OC::QualityOfService::LowQos,
-        &ps
+            OC::ModeType::Both,
+            "0.0.0.0",
+            0,
+            OC::QualityOfService::LowQos,
+            &ps
     };
 
     OCPlatform::Configure(cfg);

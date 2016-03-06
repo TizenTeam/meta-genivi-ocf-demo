@@ -38,18 +38,18 @@ using namespace std;
 //c = eina_strbuf_string_get(s);
 
 #define SET_VAL(buf,srch, i,s) {\
-	if(g_str_has_suffix(buf, srch)) {\
-		i = s; \
-		SM_INF("Debug Allocating %p = %p Value =%s", i, s, eina_strbuf_string_get(s)); \
-		continue; \
-	}\
+    if(g_str_has_suffix(buf, srch)) {\
+        i = s; \
+        SM_INF("Debug Allocating %p = %p Value =%s", i, s, eina_strbuf_string_get(s)); \
+        continue; \
+    }\
 }
 
 #define EINA_STRBUF_CLONE(a,b)   { \
-                                    a = eina_strbuf_new(); \
-                                    int len = eina_strbuf_length_get(b); \
-                                    const char *val = eina_strbuf_string_get(b); \
-                                    eina_strbuf_append_length(a, val, len); \
+    a = eina_strbuf_new(); \
+    int len = eina_strbuf_length_get(b); \
+    const char *val = eina_strbuf_string_get(b); \
+    eina_strbuf_append_length(a, val, len); \
 }
 #define SM_CALLOC(ptr, number, type)	\
     do {	\
@@ -80,50 +80,38 @@ typedef void * sm_request_handle;///< A request handle
 
 
 typedef enum {
-	SM_REQUEST_TEST,
-	SM_REQUEST_CANCEL,
-	SM_REQUEST_DESTROY,
-	SM_REQUEST_SESSION_CLOSE,
-	SM_REQUEST_MAX,
+    SM_REQUEST_TEST,
+    SM_REQUEST_CANCEL,
+    SM_REQUEST_DESTROY,
+    SM_REQUEST_SESSION_CLOSE,
+    SM_REQUEST_MAX,
 } RequestType;
 
 typedef enum sm_error {
-	SM_ERROR_NONE					            = 0,///< No errors encountered
-	SM_ERROR_BAD_API_VERSION				    ,///< The library version targeted does not match the one you claim you support
-	SM_ERROR_NETWORK_INIT_FAILURE          ,///< Network library initialization failed.
-	SM_ERROR_DATABASE_INIT_FAILED      	        ,///< database initialization failed
-	SM_ERROR_SESSION_CREATION_FAILED		    ,///< Session creation failed.
-	SM_ERROR_SESSION_START_FAILED		    ,///< Session starting failed.
-	SM_ERROR_SESSION_ALREADY_STARTED		    ,///< Session already started.
-	SM_ERROR_REQUEST_CREATION_FAILED          ,///< request creation failed.
-	SM_ERROR_REQUEST_CANCELED                  ,///< An error indicating thate request is canceled.
-	SM_ERROR_REQUEST_IN_PROGRESS			    ,///< The request is currently in the process of fetching data.
-	SM_ERROR_REQUEST_FAILED                  ,///< An request result is a failure status.
-	SM_ERROR_REQUEST_FAILED_DUE_TO_NETWORK_PROBLEM ,///< An request failed due to network problem
-	SM_ERROR_OPERATION_FAILED	            	,///< operation failed
-	SM_ERROR_NO_REQUESTS_IN_REQUESTGROUP  	,///< no requests in the request group
-	SM_ERROR_ALREADY_EXIST_IN_REQUESTGROUP ,///< already exist in the request group
-	SM_ERROR_INVALID_PARAMETER      	        ,///< Invalid function argument
-	SM_ERROR_INVALID_URL      	        ,///< Invalid URL
-	SM_ERROR_INVALID_PATH_OR_NOT_EXIT ,///< invalid path or not exist.
-	SM_ERROR_FILE_OPEN_OR_CREATION ,///< file open or creation error.
-	SM_ERROR_INVALID_SESSION_HANDLE	            ,///< invalid session handle
-	SM_ERROR_INVALID_REQUEST_HANDLE	            ,///< invalid request handle
-	SM_ERROR_INVALID_REQUESTGROUP_HANDLE	     ,///< invalid requestgroup handle
-	SM_ERROR_INVALID_ALBUM_HANDLE	            ,///< invalid album handle
-	SM_ERROR_INVALID_SONG_HANDLE            ,///< invalid song handle
-	SM_ERROR_INVALID_ARTIST_HANDLE            ,///< invalid artist handle
-	SM_ERROR_INVALID_RADIO_HANDLE            ,///< invalid radio handle
-	SM_ERROR_INVALID_SONGSTREAM_HANDLE        ,///< invalid song streaming handle
-	SM_ERROR_INVALID_UNIFIEDBILLING_HANDLE     ,///< invalid unifiedbilling handle
-	SM_ERROR_INVALID_WEBCOMMAND_HANDLE     ,///< invalid webcommand handle
-	SM_ERROR_INVALID_MYPLAYLIST_HANDLE        ,///< invalid playlist handle
-	SM_ERROR_INVALID_OPERATION        ,///< invalid operation
-	SM_ERROR_UNSUPPORTED_OPERATION        ,///< unsupported operation
-	SM_ERROR_REGISTER_ACCOUNT_FAILED	      	,///< Registering new account failed.
-	SM_ERROR_NO_SIGNED_IN_USER_EXISTS	      	,///< No signed in user exists .
-	SM_ERROR_MYPLAYLIST_ALREADY_EXISTS        ,///< my playlist already exists
-	SM_ERROR_OUT_OF_MEMORY          			///< out of memory
+    SM_ERROR_NONE					            = 0,///< No errors encountered
+    SM_ERROR_BAD_API_VERSION				    ,///< The library version targeted does not match the one you claim you support
+    SM_ERROR_NETWORK_INIT_FAILURE          ,///< Network library initialization failed.
+    SM_ERROR_DATABASE_INIT_FAILED      	        ,///< database initialization failed
+    SM_ERROR_SESSION_CREATION_FAILED		    ,///< Session creation failed.
+    SM_ERROR_SESSION_START_FAILED		    ,///< Session starting failed.
+    SM_ERROR_SESSION_ALREADY_STARTED		    ,///< Session already started.
+    SM_ERROR_REQUEST_CREATION_FAILED          ,///< request creation failed.
+    SM_ERROR_REQUEST_CANCELED                  ,///< An error indicating thate request is canceled.
+    SM_ERROR_REQUEST_IN_PROGRESS			    ,///< The request is currently in the process of fetching data.
+    SM_ERROR_REQUEST_FAILED                  ,///< An request result is a failure status.
+    SM_ERROR_REQUEST_FAILED_DUE_TO_NETWORK_PROBLEM ,///< An request failed due to network problem
+    SM_ERROR_OPERATION_FAILED	            	,///< operation failed
+    SM_ERROR_NO_REQUESTS_IN_REQUESTGROUP  	,///< no requests in the request group
+    SM_ERROR_ALREADY_EXIST_IN_REQUESTGROUP ,///< already exist in the request group
+    SM_ERROR_INVALID_PARAMETER      	        ,///< Invalid function argument
+    SM_ERROR_INVALID_URL      	        ,///< Invalid URL
+    SM_ERROR_INVALID_PATH_OR_NOT_EXIT ,///< invalid path or not exist.
+    SM_ERROR_FILE_OPEN_OR_CREATION ,///< file open or creation error.
+    SM_ERROR_INVALID_SESSION_HANDLE	            ,///< invalid session handle
+    SM_ERROR_INVALID_REQUEST_HANDLE	            ,///< invalid request handle
+    SM_ERROR_INVALID_OPERATION        ,///< invalid operation
+    SM_ERROR_UNSUPPORTED_OPERATION        ,///< unsupported operation
+    SM_ERROR_OUT_OF_MEMORY          			///< out of memory
 } sm_error;
 
 // for notifying of responses

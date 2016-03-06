@@ -47,8 +47,8 @@ int request::start(CURL **pc) {
 
     if(!pBR)
     {
-    	SM_INF("Response Object Not Set. %s", ESSG(displayName));
-    	return -1;
+        SM_INF("Response Object Not Set. %s", ESSG(displayName));
+        return -1;
     }
 
     SM_INF("Cache Invalid. Fetching from Network %s", eina_strbuf_string_get(url));
@@ -68,9 +68,9 @@ int request::start(CURL **pc) {
 }
 
 size_t request::cb_get_response_data(void *ptr, size_t size, size_t count, void *userData){
-	SM_INF("Response Callback Received...");
+    SM_INF("Response Callback Received...");
     if (userData) {
-    	request * pRequest = static_cast<request *>(userData);
+        request * pRequest = static_cast<request *>(userData);
         if (ptr) {
             size_t nDataSize = size * count;
             if(pRequest && pRequest->pBR){
