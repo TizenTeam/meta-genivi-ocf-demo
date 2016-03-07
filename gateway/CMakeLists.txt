@@ -8,10 +8,10 @@ SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(BINDIR "${PREFIX}/bin")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/inc 
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity.tizen/resource/include/
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity.tizen/resource/csdk/stack/include/
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity.tizen/resource/c_common/
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity.tizen/resource/oc_logger/include/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity/resource/include/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity/resource/csdk/stack/include/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity/resource/c_common/
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity/resource/oc_logger/include/
                     )
 
 file(GLOB_RECURSE SRCS
@@ -39,7 +39,7 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -g -fpie -O2")
 SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -g -Wno-deprecated-declarations -Wreturn-type -fpie -fPIC -fpermissive -Wall -O2 -std=c++0x")
 message(STATUS ${CMAKE_C_FLAGS})
 
-LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity.tizen/out/linux/x86_64/release/)
+LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity/out/linux/x86_64/release/)
 
 # Rules for executable
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS})
