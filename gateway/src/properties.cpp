@@ -7,7 +7,7 @@
 
 properties 	* properties::gproperties = NULL;
 void 		* properties::session     = NULL;
-const static char * CACHELOCATION = "cachelocation";
+
 
 enum {
     NONE = 0, SLASH = 1, UNICODE = 2, CONTINUE = 3, KEY_DONE = 4, IGNORE = 5

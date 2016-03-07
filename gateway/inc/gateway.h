@@ -102,8 +102,6 @@ typedef enum sm_error {
     SM_ERROR_REQUEST_FAILED                  ,///< An request result is a failure status.
     SM_ERROR_REQUEST_FAILED_DUE_TO_NETWORK_PROBLEM ,///< An request failed due to network problem
     SM_ERROR_OPERATION_FAILED	            	,///< operation failed
-    SM_ERROR_NO_REQUESTS_IN_REQUESTGROUP  	,///< no requests in the request group
-    SM_ERROR_ALREADY_EXIST_IN_REQUESTGROUP ,///< already exist in the request group
     SM_ERROR_INVALID_PARAMETER      	        ,///< Invalid function argument
     SM_ERROR_INVALID_URL      	        ,///< Invalid URL
     SM_ERROR_INVALID_PATH_OR_NOT_EXIT ,///< invalid path or not exist.
@@ -195,10 +193,9 @@ class request {
             SM_INF("%s destructor called.", ESSG(displayName));
         }
 
-        virtual void initRequest();
         virtual void onRecvDataCompleted(void);
         int start(CURL **);
-        int initRequestUrl(CURL **pc);
+        int initurl(CURL **pc);
 
     public:
         Eina_Strbuf *url;

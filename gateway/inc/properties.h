@@ -13,6 +13,9 @@ using namespace std;
 #define PROPGET(x) 		properties::getInstance()->get(x)
 #define PROPSET(x,y) 	properties::getInstance()->set(x,y)
 
+#define CACHELOCATION 	"cachelocation"
+#define RVIURL 		"rviurl"
+
 class properties {
 
 	private:

@@ -28,8 +28,7 @@ const char * getRestUrl(RequestType type)
     switch(type)
     {
         case SM_REQUEST_TEST:
-            return "http://localhost:9091/";
-            //return PROPGET(CATALOGURL).c_str();
+            return PROPGET(RVIURL).c_str();
     }
 
 }
@@ -519,11 +518,13 @@ void create_session()
 
 int main(int argc, char *argv[]) {
     ecore_init();
+    curl_global_init(CURL_GLOBAL_ALL);
 
     create_session();
 
     ecore_main_loop_begin();
 
     ecore_shutdown();
+    curl_global_cleanup();
     return 0;
 }
