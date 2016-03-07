@@ -55,7 +55,6 @@ sm_error sm_destroy_session(sm_session_handle sHandle){
         return SM_ERROR_INVALID_PARAMETER;
     }
     eina_shutdown();
-    eet_shutdown();
     sm_session *s = (sm_session *)(sHandle);
 
 

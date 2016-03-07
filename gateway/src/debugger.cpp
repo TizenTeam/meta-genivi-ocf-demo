@@ -23,4 +23,5 @@ debugger::~debugger(){
         eina_log_domain_unregister(logDomain);
     fflush(fp);
     fclose(fp);
+    eet_shutdown();
 }
