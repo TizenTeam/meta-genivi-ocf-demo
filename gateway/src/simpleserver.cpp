@@ -37,26 +37,8 @@ using namespace std;
 namespace PH = std::placeholders;
 
 int gObservation = 0;
-void * ChangeLightRepresentation (void *param);
-void * handleSlowResponse (void *param, std::shared_ptr<OCResourceRequest> pRequest);
-
-// Specifies where to notify all observers or list of observers
-// false: notifies all observers
-// true: notifies list of observers
 bool isListOfObservers = false;
-
-// Specifies secure or non-secure
-// false: non-secure resource
-// true: secure resource
 bool isSecure = false;
-
-/// Specifies whether Entity handler is going to do slow response or not
-bool isSlowResponse = false;
-
-// Forward declaring the entityHandler
-
-/// This class represents a single resource named 'lightResource'. This resource has
-/// two simple properties named 'state' and 'power'
 
 class LightResource
 {
@@ -286,26 +268,12 @@ class LightResource
                     if(requestType == "GET")
                     {
                         cout << "\t\t\trequestType : GET\n";
-                        if(isSlowResponse) // Slow response case
+                        pResponse->setErrorCode(200);
+                        pResponse->setResponseResult(OC_EH_OK);
+                        pResponse->setResourceRepresentation(get());
+                        if(OC_STACK_OK == OCPlatform::sendResponse(pResponse))
                         {
-                            static int startedThread = 0;
-                            if(!startedThread)
-                            {
-                                std::thread t(handleSlowResponse, (void *)this, request);
-                                startedThread = 1;
-                                t.detach();
-                            }
-                            ehResult = OC_EH_SLOW;
-                        }
-                        else // normal response case.
-                        {
-                            pResponse->setErrorCode(200);
-                            pResponse->setResponseResult(OC_EH_OK);
-                            pResponse->setResourceRepresentation(get());
-                            if(OC_STACK_OK == OCPlatform::sendResponse(pResponse))
-                            {
-                                ehResult = OC_EH_OK;
-                            }
+                            ehResult = OC_EH_OK;
                         }
                     }
                     else if(requestType == "PUT")
@@ -371,19 +339,8 @@ class LightResource
                                 m_interestedObservers.end());
                     }
 
-                    pthread_t threadId;
-
                     cout << "\t\trequestFlag : Observer\n";
                     gObservation = 1;
-                    static int startedThread = 0;
-
-                    // Observation happens on a different thread in ChangeLightRepresentation function.
-                    // If we have not created the thread already, we will create one here.
-                    if(!startedThread)
-                    {
-                        pthread_create (&threadId, NULL, ChangeLightRepresentation, (void *)this);
-                        startedThread = 1;
-                    }
                     ehResult = OC_EH_OK;
                 }
             }
@@ -397,91 +354,6 @@ class LightResource
 
 };
 
-// ChangeLightRepresentaion is an observation function,
-// which notifies any changes to the resource to stack
-// via notifyObservers
-void * ChangeLightRepresentation (void *param)
-{
-    LightResource* lightPtr = (LightResource*) param;
-
-    // This function continuously monitors for the changes
-    while (1)
-    {
-        sleep (3);
-
-        if (gObservation)
-        {
-            // If under observation if there are any changes to the light resource
-            // we call notifyObservors
-            //
-            // For demostration we are changing the power value and notifying.
-            lightPtr->m_power += 10;
-
-            cout << "\nPower updated to : " << lightPtr->m_power << endl;
-            cout << "Notifying observers with resource handle: " << lightPtr->getHandle() << endl;
-
-            OCStackResult result = OC_STACK_OK;
-
-            if(isListOfObservers)
-            {
-                std::shared_ptr<OCResourceResponse> resourceResponse =
-                {std::make_shared<OCResourceResponse>()};
-
-                resourceResponse->setErrorCode(200);
-                resourceResponse->setResourceRepresentation(lightPtr->get(), DEFAULT_INTERFACE);
-
-                result = OCPlatform::notifyListOfObservers(  lightPtr->getHandle(),
-                        lightPtr->m_interestedObservers,
-                        resourceResponse);
-            }
-            else
-            {
-                result = OCPlatform::notifyAllObservers(lightPtr->getHandle());
-            }
-
-            if(OC_STACK_NO_OBSERVERS == result)
-            {
-                cout << "No More observers, stopping notifications" << endl;
-                gObservation = 0;
-            }
-        }
-    }
-
-    return NULL;
-}
-
-void * handleSlowResponse (void *param, std::shared_ptr<OCResourceRequest> pRequest)
-{
-    // This function handles slow response case
-    LightResource* lightPtr = (LightResource*) param;
-    // Induce a case for slow response by using sleep
-    std::cout << "SLOW response" << std::endl;
-    sleep (10);
-
-    auto pResponse = std::make_shared<OC::OCResourceResponse>();
-    pResponse->setRequestHandle(pRequest->getRequestHandle());
-    pResponse->setResourceHandle(pRequest->getResourceHandle());
-    pResponse->setResourceRepresentation(lightPtr->get());
-    pResponse->setErrorCode(200);
-    pResponse->setResponseResult(OC_EH_OK);
-
-    // Set the slow response flag back to false
-    isSlowResponse = false;
-    OCPlatform::sendResponse(pResponse);
-    return NULL;
-}
-
-void PrintUsage()
-{
-    std::cout << std::endl;
-    std::cout << "Usage : simpleserver <value>\n";
-    std::cout << "    Default - Non-secure resource and notify all observers\n";
-    std::cout << "    1 - Non-secure resource and notify list of observers\n\n";
-    std::cout << "    2 - Secure resource and notify all observers\n";
-    std::cout << "    3 - Secure resource and notify list of observers\n\n";
-    std::cout << "    4 - Non-secure resource, GET slow response, notify all observers\n";
-}
-
 static FILE* client_open(const char* /*path*/, const char *mode)
 {
     return fopen("./oic_svr_db_server.json", mode);
@@ -489,7 +361,6 @@ static FILE* client_open(const char* /*path*/, const char *mode)
 
 void *server_thread(void *data)
 {
-    PrintUsage();
     OCPersistentStorage ps {client_open, fread, fwrite, fclose, unlink };
 
     // Create PlatformConfig object
