@@ -6,19 +6,11 @@ extern void *client_thread(void *data);
 extern void *server_thread(void *data);
 
 RESTAPI restapi[SM_REQUEST_MAX+1] = {
-    {"Test","Test",""},
-    {"Cancel","Cancel",""},
-    {"Destroy","Destroy",""},
-    {"SessionClose","LocalRequest", ""},
-    {"Max","Max",""}
-};
-
-const char *requestName[] = {
-    "SM_REQUEST_TEST",
-    "SM_REQUEST_CANCEL",
-    "SM_REQUEST_DESTROY",
-    "SM_REQUEST_SESSION_CLOSE",
-    "SM_REQUEST_MAX",
+    {"REQ_TEST","{\"jsonrpc\":\"2.0\", \"id\":\"1\", \"method\": \"message\", \"params\":{\"timeout\":1459388884,\"service_name\": \"genivi.org/node/09e624e8-a44f-4bb6-839b-8befe96c0aed/hello\",\"parameters\":{\"a\":\"b\"}}}", ""},
+    {"REQ_CANCEL","Cancel",""},
+    {"REQ_DESTROY","Destroy",""},
+    {"REQ_CLOSE","CloseGateway", ""},
+    {"REQ_MAX","Max",""}
 };
 
 sm_session_handle session;
@@ -28,6 +20,7 @@ const char * getRestUrl(RequestType type)
     switch(type)
     {
         case SM_REQUEST_TEST:
+            SM_INF("URL = %s\n", PROPGET(RVIURL).c_str());
             return PROPGET(RVIURL).c_str();
     }
 
@@ -43,12 +36,6 @@ sm_request *request_alloc_handle(sm_session_handle sHandle, RequestType type, re
     SM_INF("Allocated New Request Handle %p", r);
     return r;
 }
-
-int getArrSize()
-{
-    return sizeof(requestName)/sizeof(requestName[0]);
-}
-
 
 sm_error sm_destroy_session(sm_session_handle sHandle){
     if(!sHandle){
@@ -129,6 +116,7 @@ void do_request(int req, void *d)
 
         case SM_REQUEST_TEST:{
                                  request = sm_create_test(session, complete_cb);
+
                              }
                              break;
 
@@ -305,8 +293,7 @@ static void *session_thread(void *data)
                             continue;
                         }
 
-                        //int nRet = r->req->start(&ptr);
-                        int nRet = 0;
+                        int nRet = r->req->start(&ptr);
                         SM_DBG("update_request result: %d New Curl Handle = %p", nRet, ptr);
 
                         if (nRet==0){
@@ -359,7 +346,6 @@ static void *session_thread(void *data)
                         response *res = rl->req->pBR;
                         res->url = eina_strbuf_new();
                         eina_strbuf_append(res->url, eina_strbuf_string_get(rl->req->url));
-                        eina_strbuf_append(res->url, ESSG(res->displayName));
                         rl->req->onRecvDataCompleted();
                         sm_session *s = (sm_session *)(rl->sHandle);
                         write_response(s, rl);
@@ -520,6 +506,10 @@ int main(int argc, char *argv[]) {
     curl_global_init(CURL_GLOBAL_ALL);
 
     create_session();
+
+    do_request(0, NULL);
+
+    do_request(3, NULL);
 
     ecore_main_loop_begin();
 

@@ -26,12 +26,14 @@ int request::start(CURL **pc) {
 
     if(!pBR)
     {
-        SM_INF("Response Object Not Set. %s", ESSG(displayName));
+        SM_INF("Response Object Not Set. %s", restapi[reqType].name);
         return -1;
     }
 
     SM_INF("Cache Invalid. Fetching from Network %s", eina_strbuf_string_get(url));
     curl_easy_setopt(*pc, CURLOPT_URL, eina_strbuf_string_get(url));
+    curl_easy_setopt(*pc, CURLOPT_POST, 1L);
+    //curl_easy_setopt(*pc, CURLOPT_POSTFIELDS, );
     curl_easy_setopt(*pc, CURLOPT_FOLLOWLOCATION, 1);
     curl_easy_setopt(*pc, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(*pc, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -40,6 +42,12 @@ int request::start(CURL **pc) {
     curl_easy_setopt(*pc, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(*pc, CURLOPT_WRITEHEADER, this);
     curl_easy_setopt(*pc, CURLOPT_NOPROGRESS, 0);
+
+    //headers = curl_slist_append(headers, "Accept: application/json");
+    //headers = curl_slist_append(headers, "Content-Type: application/json");
+    //headers = curl_slist_append(headers, "charsets: utf-8");
+
+
     return 0;
 
 }

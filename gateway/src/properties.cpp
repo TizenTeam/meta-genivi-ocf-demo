@@ -16,10 +16,8 @@ enum {
 
 void properties::removeInstance()
 {
-    SM_INF("Trying to remove properties instance");
     if(gproperties){
         gproperties->save();
-        SM_INF("Finished saving properties");
         delete gproperties;
         gproperties = NULL;
         SM_INF("properties removed");
@@ -32,7 +30,6 @@ properties * properties::getInstance()
 {
     if(!gproperties){
         gproperties = new properties();
-        SM_INF("New properties Object Created - %p", gproperties);
         gproperties->load();
     }
     return gproperties;
@@ -60,7 +57,6 @@ bool properties::save(void)
 
 bool properties::load()
 {
-    SM_INF("New properties Object Created %p", this);
     sessionInfo[CACHELOCATION]="/tmp/sscache";
     int size = 0;
     int ret = 0;

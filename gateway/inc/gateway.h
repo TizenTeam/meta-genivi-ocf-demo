@@ -141,9 +141,6 @@ class response {
             contentLength = 0;
             url = NULL;
             reqType = type;
-            displayName = eina_strbuf_new();
-            eina_strbuf_append_printf(displayName, "%s_Response", restapi[type].name);
-            SM_INF("%s constructor called.", ESSG(displayName));
         }
 
         virtual ~response() {
@@ -154,9 +151,7 @@ class response {
                 responseData = NULL;
                 SM_INF("Response Data Released.");
             }
-            eina_strbuf_free(displayName);
             SM_INF("--------------Finished Freeing response Memory---------------");
-            SM_INF("%s destructor called.", eina_strbuf_string_get(displayName));
         }
 
         RequestType reqType;
@@ -170,7 +165,6 @@ class response {
         Eina_Strbuf *responseData;
         int    contentLength;
         string name;
-        Eina_Strbuf *displayName;
 };
 
 
@@ -182,15 +176,11 @@ class request {
             eh = NULL;
             reqType = type;
             url = eina_strbuf_new();
-            displayName = eina_strbuf_new();
-            eina_strbuf_append_printf(displayName, "%s_Request", restapi[type].name);
             pBR = new response(reqType);
         }
 
         virtual ~request() {
             eina_strbuf_free(url);
-            eina_strbuf_free(displayName);
-            SM_INF("%s destructor called.", ESSG(displayName));
         }
 
         virtual void onRecvDataCompleted(void);
@@ -200,7 +190,6 @@ class request {
     public:
         Eina_Strbuf *url;
         Eina_Strbuf *data;
-        Eina_Strbuf *displayName;
         RequestType reqType;
         response *pBR;
 
@@ -245,8 +234,6 @@ void * sm_get_request_appdata(sm_request_handle rHandle);
 sm_error sm_cancel_request(sm_request_handle rHandle, int call_callback_func);
 sm_error sm_destroy_request(sm_request_handle rHandle);
 sm_error sm_start_request(sm_request_handle rHandle);
-
-
 
 #endif	/* GATEWAY_H */
 
