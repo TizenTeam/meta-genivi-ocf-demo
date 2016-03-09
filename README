@@ -1,3 +1,5 @@
+RESTful API interface to RVI Local Node.
+
 For IoTivity 
 ------------
 export OCTBSTACK_LIBS="-L$HOME/GeniviDemo/iotivity/out/linux/x86_64/release -loctbstack -Wl,-rpath=$HOME/GeniviDemo/iotivity/out/linux/x86_64/release"
@@ -39,6 +41,12 @@ genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello
 Invoke the service from another terminal
 /usr/lib/rvi_core/rvi_call genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello
 
-TODO
-----
-RESTful API interface to RVI Local Node.
+
+Using HTTP
+curl -H "Content-Type: application/json" -X POST -d '{"jsonrpc": "2.0","id":"1", "method": "message", "params":{"timeout":1457399092,"service_name": "genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello","parameters ":{}}}' http://localhost:9001
+
+curl -H "Content-Type: application/json" -X 4,"service_name": "genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello","parameters":{"a":"b"}}}' http://localhost:9001
+
+{"jsonrpc":"2.0", "id":"1", "method": "message", "params":{"timeout":1459388884,"service_name": "genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello","parameters":{"a":"b"}}}
+{"jsonrpc": "2.0","id":"1", "method": "message", "params":{"timeout":1457399092,"service_name": "genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello","parameters ":{}}}
+
