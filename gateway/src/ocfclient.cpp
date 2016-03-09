@@ -41,8 +41,8 @@ std::mutex curResourceLock;
 class Light
 {
     public:
-		string m_name;
-        vector <string> props;
+	std::string m_name;
+	std::vector <std::string> props;
         Light() : m_name("") {}
 };
 
@@ -171,13 +171,6 @@ void onPost(const HeaderOptions& /*headerOptions*/,
             OCRepresentation rep2;
 
             std::cout << "Posting light representation..."<<std::endl;
-
-            mylight.m_state = true;
-            mylight.m_power = 55;
-
-            rep2.setValue("state", mylight.m_state);
-            rep2.setValue("power", mylight.m_power);
-
             curResource->post(rep2, QueryParamsMap(), &onPost2);
         }
         else
@@ -200,12 +193,6 @@ void postLightRepresentation(std::shared_ptr<OCResource> resource)
         OCRepresentation rep;
 
         std::cout << "Posting light representation..."<<std::endl;
-
-        mylight.m_state = false;
-        mylight.m_power = 105;
-
-        rep.setValue("state", mylight.m_state);
-        rep.setValue("power", mylight.m_power);
 
         // Invoke resource's post API with rep, query map and the callback parameter
         resource->post(rep, QueryParamsMap(), &onPost);
@@ -245,13 +232,6 @@ void putLightRepresentation(std::shared_ptr<OCResource> resource)
         OCRepresentation rep;
 
         std::cout << "Putting light representation..."<<std::endl;
-
-        mylight.m_state = true;
-        mylight.m_power = 15;
-
-        rep.setValue("state", mylight.m_state);
-        rep.setValue("power", mylight.m_power);
-
         // Invoke resource's put API with rep, query map and the callback parameter
         resource->put(rep, QueryParamsMap(), &onPut);
     }
