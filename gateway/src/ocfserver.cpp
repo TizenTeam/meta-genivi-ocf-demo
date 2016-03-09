@@ -24,21 +24,16 @@
 ///
 
 #include <functional>
-
 #include <pthread.h>
 #include <mutex>
 #include <condition_variable>
-
 #include "OCPlatform.h"
 #include "OCApi.h"
-
 using namespace OC;
 using namespace std;
 namespace PH = std::placeholders;
-
 int gObservation = 0;
 bool isListOfObservers = false;
-bool isSecure = false;
 
 class LightResource
 {
@@ -46,8 +41,7 @@ class LightResource
     public:
         /// Access this property from a TB client
         std::string m_name;
-        bool m_state;
-        int m_power;
+        vector<string> props;
         std::string m_lightUri;
         OCResourceHandle m_resourceHandle;
         OCRepresentation m_lightRep;
@@ -56,13 +50,10 @@ class LightResource
     public:
         /// Constructor
         LightResource()
-            :m_name("John's light"), m_state(false), m_power(0), m_lightUri("/a/light"),
+            :m_name("John's light"), m_lightUri("/a/light"),
             m_resourceHandle(nullptr) {
                 // Initialize representation
                 m_lightRep.setUri(m_lightUri);
-
-                m_lightRep.setValue("state", m_state);
-                m_lightRep.setValue("power", m_power);
                 m_lightRep.setValue("name", m_name);
             }
 
@@ -81,14 +72,7 @@ class LightResource
 
             // OCResourceProperty is defined ocstack.h
             uint8_t resourceProperty;
-            if(isSecure)
-            {
-                resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE | OC_SECURE;
-            }
-            else
-            {
-                resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;
-            }
+            resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;
             EntityHandler cb = std::bind(&LightResource::entityHandler, this,PH::_1);
 
             // This will internally create and register the resource.
@@ -113,14 +97,7 @@ class LightResource
 
             // OCResourceProperty is defined ocstack.h
             uint8_t resourceProperty;
-            if(isSecure)
-            {
-                resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE | OC_SECURE;
-            }
-            else
-            {
-                resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;
-            }
+            resourceProperty = OC_DISCOVERABLE | OC_OBSERVABLE;
             EntityHandler cb = std::bind(&LightResource::entityHandler, this,PH::_1);
 
             OCResourceHandle resHandle;
@@ -149,22 +126,13 @@ class LightResource
         void put(OCRepresentation& rep)
         {
             try {
-                if (rep.getValue("state", m_state))
+                if (rep.getValue("name", m_name))
                 {
-                    cout << "\t\t\t\t" << "state: " << m_state << endl;
+                    cout << "\t\t\t\t" << "name: " << m_name << endl;
                 }
                 else
                 {
-                    cout << "\t\t\t\t" << "state not found in the representation" << endl;
-                }
-
-                if (rep.getValue("power", m_power))
-                {
-                    cout << "\t\t\t\t" << "power: " << m_power << endl;
-                }
-                else
-                {
-                    cout << "\t\t\t\t" << "power not found in the representation" << endl;
+                    cout << "\t\t\t\t" << "name not found in the representation" << endl;
                 }
             }
             catch (exception& e)
@@ -207,9 +175,7 @@ class LightResource
         // sending out.
         OCRepresentation get()
         {
-            m_lightRep.setValue("state", m_state);
-            m_lightRep.setValue("power", m_power);
-
+            m_lightRep.setValue("name", m_name);
             return m_lightRep;
         }
 

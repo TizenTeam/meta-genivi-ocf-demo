@@ -32,8 +32,8 @@
 using namespace OC;
 
 typedef std::map<OCResourceIdentifier, std::shared_ptr<OCResource>> DiscoveredResourceMap;
-
 DiscoveredResourceMap discoveredResources;
+
 std::shared_ptr<OCResource> curResource;
 static ObserveType OBSERVE_TYPE_TO_USE = ObserveType::Observe;
 std::mutex curResourceLock;
@@ -41,14 +41,9 @@ std::mutex curResourceLock;
 class Light
 {
     public:
-
-        bool m_state;
-        int m_power;
-        std::string m_name;
-
-        Light() : m_state(false), m_power(0), m_name("")
-    {
-    }
+		string m_name;
+        vector <string> props;
+        Light() : m_name("") {}
 };
 
 Light mylight;
@@ -77,12 +72,8 @@ void onObserve(const HeaderOptions /*headerOptions*/, const OCRepresentation& re
 
             std::cout << "OBSERVE RESULT:"<<std::endl;
             std::cout << "\tSequenceNumber: "<< sequenceNumber << std::endl;
-            rep.getValue("state", mylight.m_state);
-            rep.getValue("power", mylight.m_power);
             rep.getValue("name", mylight.m_name);
 
-            std::cout << "\tstate: " << mylight.m_state << std::endl;
-            std::cout << "\tpower: " << mylight.m_power << std::endl;
             std::cout << "\tname: " << mylight.m_name << std::endl;
 
             if(observe_count() == 11)
@@ -132,12 +123,7 @@ void onPost2(const HeaderOptions& /*headerOptions*/,
             }
             else
             {
-                rep.getValue("state", mylight.m_state);
-                rep.getValue("power", mylight.m_power);
                 rep.getValue("name", mylight.m_name);
-
-                std::cout << "\tstate: " << mylight.m_state << std::endl;
-                std::cout << "\tpower: " << mylight.m_power << std::endl;
                 std::cout << "\tname: " << mylight.m_name << std::endl;
             }
 
@@ -178,12 +164,7 @@ void onPost(const HeaderOptions& /*headerOptions*/,
             }
             else
             {
-                rep.getValue("state", mylight.m_state);
-                rep.getValue("power", mylight.m_power);
                 rep.getValue("name", mylight.m_name);
-
-                std::cout << "\tstate: " << mylight.m_state << std::endl;
-                std::cout << "\tpower: " << mylight.m_power << std::endl;
                 std::cout << "\tname: " << mylight.m_name << std::endl;
             }
 
@@ -239,13 +220,7 @@ void onPut(const HeaderOptions& /*headerOptions*/, const OCRepresentation& rep, 
         if(eCode == OC_STACK_OK)
         {
             std::cout << "PUT request was successful" << std::endl;
-
-            rep.getValue("state", mylight.m_state);
-            rep.getValue("power", mylight.m_power);
             rep.getValue("name", mylight.m_name);
-
-            std::cout << "\tstate: " << mylight.m_state << std::endl;
-            std::cout << "\tpower: " << mylight.m_power << std::endl;
             std::cout << "\tname: " << mylight.m_name << std::endl;
 
             postLightRepresentation(curResource);
@@ -291,13 +266,7 @@ void onGet(const HeaderOptions& /*headerOptions*/, const OCRepresentation& rep, 
         {
             std::cout << "GET request was successful" << std::endl;
             std::cout << "Resource URI: " << rep.getUri() << std::endl;
-
-            rep.getValue("state", mylight.m_state);
-            rep.getValue("power", mylight.m_power);
             rep.getValue("name", mylight.m_name);
-
-            std::cout << "\tstate: " << mylight.m_state << std::endl;
-            std::cout << "\tpower: " << mylight.m_power << std::endl;
             std::cout << "\tname: " << mylight.m_name << std::endl;
 
             putLightRepresentation(curResource);
@@ -398,35 +367,6 @@ void foundResource(std::shared_ptr<OCResource> resource)
     catch(std::exception& e)
     {
         std::cerr << "Exception in foundResource: "<< e.what() << std::endl;
-    }
-}
-
-void printUsage()
-{
-    std::cout << std::endl;
-    std::cout << "---------------------------------------------------------------------\n";
-    std::cout << "Usage : simpleclient <ObserveType>" << std::endl;
-    std::cout << "   ObserveType : 1 - Observe" << std::endl;
-    std::cout << "   ObserveType : 2 - ObserveAll" << std::endl;
-    std::cout << "---------------------------------------------------------------------\n\n";
-}
-
-void checkObserverValue(int value)
-{
-    if (value == 1)
-    {
-        OBSERVE_TYPE_TO_USE = ObserveType::Observe;
-        std::cout << "<===Setting ObserveType to Observe===>\n\n";
-    }
-    else if (value == 2)
-    {
-        OBSERVE_TYPE_TO_USE = ObserveType::ObserveAll;
-        std::cout << "<===Setting ObserveType to ObserveAll===>\n\n";
-    }
-    else
-    {
-        std::cout << "<===Invalid ObserveType selected."
-            <<" Setting ObserveType to Observe===>\n\n";
     }
 }
 
