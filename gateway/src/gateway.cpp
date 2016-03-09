@@ -12,13 +12,15 @@ extern void *client_thread(void *data);
 extern void *server_thread(void *data);
 sm_error sm_destroy_session(sm_session_handle sHandle);
 
-RESTAPI restapi[SM_REQUEST_MAX + 1] =
-		{
-				{ "REQ_TEST",
-						"{\"jsonrpc\":\"2.0\", \"id\":\"1\", \"method\": \"message\", \"params\":{\"timeout\":1459388884,\"service_name\": \"genivi.org/node/09e624e8-a44f-4bb6-839b-8befe96c0aed/hello\",\"parameters\":{\"a\":\"b\"}}}",
-						"application/json" }, { "REQ_CANCEL", "Cancel", "" }, {
-						"REQ_DESTROY", "Destroy", "" }, { "REQ_CLOSE",
-						"CloseGateway", "" }, { "REQ_MAX", "Max", "" } };
+RESTAPI restapi[SM_REQUEST_MAX + 1] = {
+	{ "REQ_TEST",
+			"{\"jsonrpc\":\"2.0\", \"id\":\"1\", \"method\": \"message\", \"params\":{\"timeout\":1459388884,\"service_name\": \"genivi.org/node/09e624e8-a44f-4bb6-839b-8befe96c0aed/hello\",\"parameters\":{\"a\":\"b\"}}}",
+			"application/json"},
+	{"REQ_CANCEL",  "Cancel", ""},
+	{"REQ_DESTROY", "Destroy", ""},
+	{"REQ_CLOSE", "CloseGateway", ""},
+	{ "REQ_MAX", "Max", ""}
+};
 
 void complete_cb(sm_request_handle rHandle, void *data) {
 
@@ -27,11 +29,11 @@ void complete_cb(sm_request_handle rHandle, void *data) {
 	switch (next) {
 		case SM_REQUEST_TEST: {
 			SM_INF("SM_REQUEST_TEST");
-			}
-			break;
+		}
+		break;
 	}
 	SM_INF("-----Data Check End---------------");
-	sm_request *r = (sm_request *)rHandle;
+	sm_request *r = (sm_request *) rHandle;
 	sm_session_handle s = r->sHandle;
 	sm_destroy_request(rHandle);
 	return;
@@ -226,7 +228,7 @@ _url_data_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
     sm_request *r = (sm_request *)data;
     SM_INF("Data for Request %s", restapi[r->req->reqType].name);
 
-int i;
+    int i;
     for (i = 0; i < url_data->size; i++)
 		printf("%c", url_data->data[i]);
 
@@ -244,16 +246,14 @@ _url_complete_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 	Ecore_Con_Event_Url_Complete *url_complete = event_info;
 	const Eina_List *headers, *l;
 	char *str;
-	printf("\n");
-	printf("download completed with status code: %d\n", url_complete->status);
 	headers = ecore_con_url_response_headers_get(url_complete->url_con);
 	EINA_LIST_FOREACH(headers, l, str)
-	printf("header: %s\n", str);
+		printf("header: %s\n", str);
 
     sm_request *r = (sm_request *)data;
     SM_INF("Completed Request %s", restapi[r->req->reqType].name);
 
-GError *error = NULL;
+    GError *error = NULL;
 	JsonParser *jsonParser = json_parser_new ();
 	if(jsonParser)
 	{
@@ -265,132 +265,131 @@ GError *error = NULL;
 	}
 	else
 	{
-		SM_ERR(
-		"Unable to create parser");return EINA_TRUE;
+		SM_ERR("Unable to create parser");
+		return EINA_TRUE;
 	}
 
 	if (error)
 	{
-		SM_ERR("Error->code=%d", error->code);SM_ERR(
-		"Error->message=%s", error->message); }
-else
-{
-JsonNode *root;
-root =json_parser_get_root (jsonParser);
-if (NULL != root)
-{
-	int level = 1;
-	Eina_List *jsonList = NULL;
-	jsonList = ParseJsonEntity(root,false);
-	printParsedList(jsonList,level);
-}
-}
-return EINA_TRUE;
+		SM_ERR("Error->code=%d", error->code);
+		SM_ERR("Error->message=%s", error->message);
+	}
+	else
+	{
+		JsonNode *root;
+		root =json_parser_get_root (jsonParser);
+		if (NULL != root)
+		{
+			int level = 1;
+			Eina_List *jsonList = NULL;
+			jsonList = ParseJsonEntity(root,false);
+			printParsedList(jsonList,level);
+		}
+	}
+	return EINA_TRUE;
 }
 
 static void write_response(sm_session *session, sm_request *request) {
-if (!session || !request) {
-return;
-}
-
-SM_INF("In sending response - handle= %p handle->req = %p", request,
-	request->req);
-session_data sd;
-sd.rHandle = (sm_request_handle) request;
-int size = write(session->respSock[1], &sd, sizeof(session_data));
-if (size > 0) {
-SM_INF("Write %d bytes to %d", size, session->respSock[1]);
-return;
-}
-SM_INF("Write %d bytes to Errno = %s", size, strerror(errno));
-return;
+	if (!session || !request) {
+		return;
+	}
+	SM_INF("In sending response - handle= %p handle->req = %p", request,request->req);
+	session_data sd;
+	sd.rHandle = (sm_request_handle) request;
+	int size = write(session->respSock[1], &sd, sizeof(session_data));
+	if (size > 0) {
+		SM_INF("Write %d bytes to %d", size, session->respSock[1]);
+		return;
+	}
+	SM_INF("Write %d bytes to Errno = %s", size, strerror(errno));
+	return;
 }
 
 static void *session_thread(void *data) {
-sm_session *s = (sm_session *) data;
-session_data sd;
-fd_set R, W, X;
-int M = -1;
-int rc = 0;
+	sm_session *s = (sm_session *) data;
+	session_data sd;
+	fd_set R, W, X;
+	int M = -1;
+	int rc = 0;
 
-SM_INF("Creating session thread %p", s);
-FD_ZERO(&R);
-FD_ZERO(&W);
-FD_ZERO(&X);
-FD_SET(s->reqSock[0], &R);
-int max_sd = s->reqSock[0];
+	SM_INF("Creating session thread %p", s);
+	FD_ZERO(&R);
+	FD_ZERO(&W);
+	FD_ZERO(&X);
+	FD_SET(s->reqSock[0], &R);
+	int max_sd = s->reqSock[0];
 
- //wait for request, indefinitely
-while (true) {
-rc = select(max_sd + 1, &R, &W, &X, NULL);
+	 //wait for request, indefinitely
+	while (true) {
+		rc = select(max_sd + 1, &R, &W, &X, NULL);
 
-//process the app request
-if (rc > 0) {
-	bool isAppReq = FD_ISSET(s->reqSock[0], &R);
-	if (isAppReq) {
-		int sock = s->reqSock[0];
-		SM_INF("MAX FD IS SET max_sd = %d", max_sd);
-		//int bytes = read(sock, &sd, sizeof(session_data));
-		int bytes = read(sock, &sd, 8);
-		SM_INF("Read Request Size = %d....waiting", bytes);
+		//process the app request
+		if (rc > 0) {
+			bool isAppReq = FD_ISSET(s->reqSock[0], &R);
+			if (isAppReq) {
+				int sock = s->reqSock[0];
+				SM_INF("MAX FD IS SET max_sd = %d", max_sd);
+				//int bytes = read(sock, &sd, sizeof(session_data));
+				int bytes = read(sock, &sd, 8);
+				SM_INF("Read Request Size = %d....waiting", bytes);
 
-		if (bytes > 0) {
-			sm_request *r = (sm_request *) sd.rHandle;
-			CURL *ptr = NULL;
-			SM_INF("Processing request type = %d", r->req->reqType);
-			if (r->req->reqType == SM_REQUEST_SESSION_CLOSE) {
-				SM_INF("Closing the session thread. %p", s);
-				pthread_exit (NULL);
-				return NULL;
-			}
-			if (r->req) {
-				if (r->req->reqType == SM_REQUEST_CANCEL
-						|| r->req->reqType == SM_REQUEST_DESTROY) {
-					sm_request *hdl = (sm_request *) (sm_get_request_appdata(r));
-					if (hdl && hdl->req) {
-						SM_INF("Canceled Request %p", hdl->req);
-						hdl->pCallback = NULL; // don't callback.
+				if (bytes > 0) {
+					sm_request *r = (sm_request *) sd.rHandle;
+					CURL *ptr = NULL;
+					SM_INF("Processing request type = %d", r->req->reqType);
+					if (r->req->reqType == SM_REQUEST_SESSION_CLOSE) {
+						SM_INF("Closing the session thread. %p", s);
+						pthread_exit (NULL);
+						return NULL;
 					}
-					if (r->req->reqType == SM_REQUEST_DESTROY) {
-						delete hdl->req;
-						hdl->req = NULL;
+					if (r->req) {
+						if (r->req->reqType == SM_REQUEST_CANCEL
+								|| r->req->reqType == SM_REQUEST_DESTROY) {
+							sm_request *hdl = (sm_request *) (sm_get_request_appdata(r));
+							if (hdl && hdl->req) {
+								SM_INF("Canceled Request %p", hdl->req);
+								hdl->pCallback = NULL; // don't callback.
+							}
+							if (r->req->reqType == SM_REQUEST_DESTROY) {
+								delete hdl->req;
+								hdl->req = NULL;
+							}
+							SM_FREE(hdl);
+							r->status = SM_ERROR_NONE;
+							continue;
+						}
+						r->status = SM_ERROR_OPERATION_FAILED;
+						write_response(s, (sm_request *) sd.rHandle);
+						continue;
+					} else {
+						SM_INF("Request Object is Null.");
+						continue;
 					}
-					SM_FREE(hdl);
-					r->status = SM_ERROR_NONE;
-					continue;
 				}
-				r->status = SM_ERROR_OPERATION_FAILED;
-				write_response(s, (sm_request *) sd.rHandle);
-				continue;
+			}
+		}
+		if (rc == 0) {
+			if (s->reqSock[0] > 0) {
+				SM_INF("Select Timeout %d", s->reqSock[0]);
 			} else {
-				SM_INF("Request Object is Null.");
-				continue;
+				SM_INF("Session closed.");
+				break;
 			}
 		}
 	}
-}
-if (rc == 0) {
-	if (s->reqSock[0] > 0) {
-		SM_INF("Select Timeout %d", s->reqSock[0]);
-	} else {
-		SM_INF("Session closed.");
-		break;
-	}
-}
-}
-SM_INF("Exiting thread.");
-pthread_exit (NULL);
-return NULL;
+	SM_INF("Exiting thread.");
+	pthread_exit (NULL);
+	return NULL;
 }
 
 const char * getRestUrl(RequestType type) {
-switch (type) {
-case SM_REQUEST_TEST:
-SM_INF("URL = %s", PROPGET(RVIURL).c_str());
-return PROPGET(RVIURL).c_str();
-}
-return NULL;
-
+	switch (type) {
+		case SM_REQUEST_TEST:{
+			SM_INF("URL = %s", PROPGET(RVIURL).c_str());
+			return PROPGET(RVIURL).c_str();
+		}
+	}
+	return NULL;
 }
 
 sm_request *request_alloc_handle(sm_session_handle sHandle, RequestType type,
@@ -565,7 +564,6 @@ int main(int argc, const char *argv[]) {
 	ecore_con_shutdown();
 	ecore_shutdown();
 	//sm_destroy_session(session);
-
 
 	return 0;
 }
