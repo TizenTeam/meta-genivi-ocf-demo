@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(gateway)
+PROJECT(oicgw)
 
 SET(VENDOR "samsung")
 SET(PACKAGE ${PROJECT_NAME})
@@ -19,17 +19,17 @@ file(GLOB_RECURSE SRCS
 )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(gateway REQUIRED libcurl glib-2.0 openssl eina eet ecore json-glib-1.0 sqlite3)
+pkg_check_modules(oicgw REQUIRED libcurl glib-2.0 openssl eina eet ecore ecore-con json-glib-1.0 sqlite3)
 
-FOREACH(flag ${gateway_CFLAGS})
+FOREACH(flag ${oicgw_CFLAGS})
 	SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
 ENDFOREACH(flag)
 MESSAGE(STATUS "EXTRA_CFLAGS = ${EXTRA_CFLAGS}")
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${GATEWAY_FLAGS} ${EXTRA_CFLAGS}")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GATEWAY_FLAGS} ${EXTRA_CFLAGS}")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${oicgw_FLAGS} ${EXTRA_CFLAGS}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${oicgw_FLAGS} ${EXTRA_CFLAGS}")
 
-FOREACH(flag ${gateway_LDFLAGS})
+FOREACH(flag ${oicgw_LDFLAGS})
     SET(EXTRA_LDFLAGS "${EXTRA_LDFLAGS} ${flag}")
 ENDFOREACH(flag)
 
@@ -44,7 +44,7 @@ LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../iotivity/out/linux/x86_64/rel
 # Rules for executable
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS})
 SET_TARGET_PROPERTIES (${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX")
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${gateway_LDFLAGS} -L. -pie -loc -loctbstack -loc_logger)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${oicgw_LDFLAGS} -L. -pie -loc -loctbstack -loc_logger)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${BINDIR})
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/config.properties DESTINATION ${BINDIR})
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/oic_svr_db_client.json DESTINATION ${BINDIR})

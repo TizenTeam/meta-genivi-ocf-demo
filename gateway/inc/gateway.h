@@ -22,8 +22,6 @@ using namespace std;
 
 #define ESSG(ptr) ((ptr)?eina_strbuf_string_get(ptr):"")
 
-#define PROPGETURL(x) 	getRestUrl(x)
-
 //SM_INF("DEALLOCATING STRBUF %p Value =%s", ptr, eina_strbuf_string_get(ptr));
 #define EINA_STRBUF_FREE(ptr) \
     do {	\
@@ -33,10 +31,6 @@ using namespace std;
         }	\
     } while (0);
 
-//	char *tmp = strstr(buf, srch);
-//	if(tmp && !strncmp(tmp, srch, strlen(tmp))) {
-
-//c = eina_strbuf_string_get(s);
 
 #define SET_VAL(buf,srch, i,s) {\
     if(g_str_has_suffix(buf, srch)) {\
@@ -77,8 +71,6 @@ using namespace std;
 
 typedef void * sm_session_handle;///< A session handle
 typedef void * sm_request_handle;///< A request handle
-
-
 
 typedef enum {
     SM_REQUEST_TEST,
@@ -127,7 +119,7 @@ class response;
 typedef struct {
     char name[30];
     char param[500];
-    char contentTypes[50];
+    char contenttype[50];
 }RESTAPI;
 
 extern RESTAPI restapi[SM_REQUEST_MAX + 1];
@@ -155,9 +147,6 @@ class response {
         }
 
         RequestType reqType;
-        const static string REQ;
-        const static string RES;
-
         int nHttpStatusCode;
         string strContentType;
 
@@ -173,7 +162,6 @@ class request {
     public:
         request(RequestType type) {
             pBR = NULL;
-            eh = NULL;
             reqType = type;
             url = eina_strbuf_new();
             pBR = new response(reqType);
@@ -183,25 +171,12 @@ class request {
             eina_strbuf_free(url);
         }
 
-        virtual void onRecvDataCompleted(void);
-        int start(CURL **);
-        int initurl(CURL **pc);
-
     public:
         Eina_Strbuf *url;
         Eina_Strbuf *data;
         RequestType reqType;
         response *pBR;
-
-        CURL *eh;
-        struct curl_slist *headers;
-
-    private:
-        static size_t cb_get_response_header(void *ptr, size_t size, size_t count,
-                void *userData);
-        static size_t cb_get_response_data(void *ptr, size_t size, size_t count,
-                void *userData);
-        static int cancel_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
+        Ecore_Con_Url *url_con;
 };
 
 typedef struct {
