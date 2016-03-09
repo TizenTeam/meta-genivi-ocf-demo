@@ -279,7 +279,7 @@ JsonNode *root;
 root =json_parser_get_root (jsonParser);
 if (NULL != root)
 {
-	int level = 2;
+	int level = 1;
 	Eina_List *jsonList = NULL;
 	jsonList = ParseJsonEntity(root,false);
 	printParsedList(jsonList,level);
