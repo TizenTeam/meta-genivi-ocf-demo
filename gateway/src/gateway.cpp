@@ -1,41 +1,35 @@
-#include <stdio.h>
-#include <Eina.h>
-#include <Ecore.h>
-#include <Ecore_Con.h>
 #include "gateway.h"
-#include <string>
-#include <sqlite3.h>
-#include <glib.h>
-#include <json-glib/json-glib.h>
+#include "debugger.h"
 
 extern void *client_thread(void *data);
 extern void *server_thread(void *data);
 sm_error sm_destroy_session(sm_session_handle sHandle);
 
-RESTAPI restapi[SM_REQUEST_MAX + 1] = {
+RESTAPI restapi[GW_REQ_MAX + 1] = {
 	{ "REQ_TEST",
 			"{\"jsonrpc\":\"2.0\", \"id\":\"1\", \"method\": \"message\", \"params\":{\"timeout\":1459388884,\"service_name\": \"genivi.org/node/09e624e8-a44f-4bb6-839b-8befe96c0aed/hello\",\"parameters\":{\"a\":\"b\"}}}",
 			"application/json"},
-	{"REQ_CANCEL",  "Cancel", ""},
-	{"REQ_DESTROY", "Destroy", ""},
+	{"OIC_CLIENT_FIND_RESOURCE", "ToDo", ""},
+	{"OIC_CLIENT_GET_RESOURCE", "ToDo", ""},
+	{"OIC_CLIENT_PUT_RESOURCE", "ToDo", ""},
+	{"OIC_CLIENT_OBSERVE_RESOURCE", "ToDo", ""},
+	{"OIC_SERVER_GET_RESOURCE", "ToDo", ""},
+	{"OIC_SERVER_PUT_RESOURCE", "ToDo", ""},
+
 	{"REQ_CLOSE", "CloseGateway", ""},
 	{ "REQ_MAX", "Max", ""}
 };
 
 void complete_cb(sm_request_handle rHandle, void *data) {
-
-	SM_INF("[RESPONSE_CALLBACK]");
+	GW_INF("[RESPONSE_CALLBACK]");
 	int next = 0;
 	switch (next) {
-		case SM_REQUEST_TEST: {
-			SM_INF("SM_REQUEST_TEST");
+		case GW_REQ_TEST: {
+			GW_INF("GW_REQ_TEST");
 		}
 		break;
 	}
-	SM_INF("-----Data Check End---------------");
-	sm_request *r = (sm_request *) rHandle;
-	sm_session_handle s = r->sHandle;
-	sm_destroy_request(rHandle);
+	GW_INF("-----Data Check End---------------");
 	return;
 }
 
@@ -44,26 +38,26 @@ static Eina_Bool _fd_handler_cb(void *data, Ecore_Fd_Handler *handler) {
 	int fd;
 
 	if (ecore_main_fd_handler_active_get(handler, ECORE_FD_ERROR)) {
-		SM_INF("An error has occurred. Stop watching this fd and quit.");
+		GW_INF("An error has occurred. Stop watching this fd and quit.");
 		ecore_main_loop_quit();
 		return ECORE_CALLBACK_CANCEL;
 	}
 
 	session_data sd;
 	fd = ecore_main_fd_handler_fd_get(handler);
-	SM_INF("Waiting for data from: %d", fd);
+	GW_INF("Waiting for data from: %d", fd);
 	nbytes = read(fd, &sd, sizeof(session_data));
 	if (nbytes <= 0) {
-		SM_INF("Nothing to read, exiting...");
+		GW_INF("Nothing to read, exiting...");
 		ecore_main_loop_quit();
 		return ECORE_CALLBACK_CANCEL;
 	} else {
-		SM_INF("Response Read %lu bytes from input", nbytes);
+		GW_INF("Response Read %lu bytes from input", nbytes);
 		sm_request *r = ((sm_request *) (sd.rHandle));
 
 		if (r != NULL) {
 			if (r->pCallback) {
-				SM_INF("Before Calling Callback function of request");
+				GW_INF("Before Calling Callback function of request");
 				r->pCallback(r, r->appdata);
 			}
 		}
@@ -74,18 +68,18 @@ static Eina_Bool _fd_handler_cb(void *data, Ecore_Fd_Handler *handler) {
 sm_error sm_notify_session_response(sm_session_handle sHandle) {
 	int fd = -1;
 	if (sHandle) {
-		SM_INF("Response Socket = %d", ((sm_session * )sHandle)->respSock[0]);
-		fd = ((sm_session *) sHandle)->respSock[0];
+		GW_INF("Response Socket = %d", ((sm_session * )sHandle)->ressock[0]);
+		fd = ((sm_session *) sHandle)->ressock[0];
 	} else {
-		SM_INF("Session Invalid.");
-		return SM_ERROR_NETWORK_INIT_FAILURE;
+		GW_INF("Session Invalid.");
+		return GW_ERROR_NETWORK_INIT_FAILURE;
 	}
 	if (ecore_main_fd_handler_add(fd,
 			(Ecore_Fd_Handler_Flags)(ECORE_FD_READ | ECORE_FD_ERROR),
 			_fd_handler_cb, NULL, NULL, NULL))
-		return SM_ERROR_NONE;
+		return GW_ERROR_NONE;
 	else
-		return SM_ERROR_NETWORK_INIT_FAILURE;
+		return GW_ERROR_NETWORK_INIT_FAILURE;
 }
 
 gchar*
@@ -209,7 +203,7 @@ void printParsedList(Eina_List * jsonlist, int level) {
 				spaceOffset[2 * i + 1] = '>';
 			}
 			spaceOffset[2 * level] = '\0';
-			SM_INF("%s %s", spaceOffset, (gchar* )list_data);
+			GW_INF("%s %s", spaceOffset, (gchar* )list_data);
 			if (spaceOffset != NULL)
 				free(spaceOffset);
 			if (list_data != NULL)
@@ -226,7 +220,7 @@ _url_data_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 {
 	Ecore_Con_Event_Url_Data *url_data = event_info;
     sm_request *r = (sm_request *)data;
-    SM_INF("Data for Request %s", restapi[r->req->reqType].name);
+    GW_INF("Data for Request %s", restapi[r->req->reqType].name);
 
     int i;
     for (i = 0; i < url_data->size; i++)
@@ -251,7 +245,7 @@ _url_complete_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 		printf("header: %s\n", str);
 
     sm_request *r = (sm_request *)data;
-    SM_INF("Completed Request %s", restapi[r->req->reqType].name);
+    GW_INF("Completed Request %s", restapi[r->req->reqType].name);
 
     GError *error = NULL;
 	JsonParser *jsonParser = json_parser_new ();
@@ -259,20 +253,20 @@ _url_complete_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 	{
         if (!json_parser_load_from_data (jsonParser, ESSG(r->req->pBR->responseData), r->req->pBR->contentLength, &error))
         {
-            SM_INF("ParseNestedObjects Error");g_error_free (error);
+            GW_INF("ParseNestedObjects Error");g_error_free (error);
             return EINA_TRUE;
         }
 	}
 	else
 	{
-		SM_ERR("Unable to create parser");
+		GW_ERR("Unable to create parser");
 		return EINA_TRUE;
 	}
 
 	if (error)
 	{
-		SM_ERR("Error->code=%d", error->code);
-		SM_ERR("Error->message=%s", error->message);
+		GW_ERR("Error->code=%d", error->code);
+		GW_ERR("Error->message=%s", error->message);
 	}
 	else
 	{
@@ -293,15 +287,15 @@ static void write_response(sm_session *session, sm_request *request) {
 	if (!session || !request) {
 		return;
 	}
-	SM_INF("In sending response - handle= %p handle->req = %p", request,request->req);
+	GW_INF("In sending response - handle= %p handle->req = %p", request,request->req);
 	session_data sd;
 	sd.rHandle = (sm_request_handle) request;
-	int size = write(session->respSock[1], &sd, sizeof(session_data));
+	int size = write(session->ressock[1], &sd, sizeof(session_data));
 	if (size > 0) {
-		SM_INF("Write %d bytes to %d", size, session->respSock[1]);
+		GW_INF("Write %d bytes to %d", size, session->ressock[1]);
 		return;
 	}
-	SM_INF("Write %d bytes to Errno = %s", size, strerror(errno));
+	GW_INF("Write %d bytes to Errno = %s", size, strerror(errno));
 	return;
 }
 
@@ -309,15 +303,14 @@ static void *session_thread(void *data) {
 	sm_session *s = (sm_session *) data;
 	session_data sd;
 	fd_set R, W, X;
-	int M = -1;
 	int rc = 0;
 
-	SM_INF("Creating session thread %p", s);
+	GW_INF("Creating session thread %p", s);
 	FD_ZERO(&R);
 	FD_ZERO(&W);
 	FD_ZERO(&X);
-	FD_SET(s->reqSock[0], &R);
-	int max_sd = s->reqSock[0];
+	FD_SET(s->reqsock[0], &R);
+	int max_sd = s->reqsock[0];
 
 	 //wait for request, indefinitely
 	while (true) {
@@ -325,67 +318,49 @@ static void *session_thread(void *data) {
 
 		//process the app request
 		if (rc > 0) {
-			bool isAppReq = FD_ISSET(s->reqSock[0], &R);
+			bool isAppReq = FD_ISSET(s->reqsock[0], &R);
 			if (isAppReq) {
-				int sock = s->reqSock[0];
-				SM_INF("MAX FD IS SET max_sd = %d", max_sd);
-				//int bytes = read(sock, &sd, sizeof(session_data));
-				int bytes = read(sock, &sd, 8);
-				SM_INF("Read Request Size = %d....waiting", bytes);
+				int sock = s->reqsock[0];
+				GW_INF("MAX FD IS SET max_sd = %d", max_sd);
+				int bytes = read(sock, &sd, sizeof(session_data));
+				GW_INF("Read Request Size = %d....waiting", bytes);
 
 				if (bytes > 0) {
 					sm_request *r = (sm_request *) sd.rHandle;
-					CURL *ptr = NULL;
-					SM_INF("Processing request type = %d", r->req->reqType);
-					if (r->req->reqType == SM_REQUEST_SESSION_CLOSE) {
-						SM_INF("Closing the session thread. %p", s);
+					GW_INF("Processing request type = %d", r->req->reqType);
+					if (r->req->reqType == GW_REQ_SESSION_CLOSE) {
+						GW_INF("Closing the session thread. %p", s);
 						pthread_exit (NULL);
 						return NULL;
 					}
 					if (r->req) {
-						if (r->req->reqType == SM_REQUEST_CANCEL
-								|| r->req->reqType == SM_REQUEST_DESTROY) {
-							sm_request *hdl = (sm_request *) (sm_get_request_appdata(r));
-							if (hdl && hdl->req) {
-								SM_INF("Canceled Request %p", hdl->req);
-								hdl->pCallback = NULL; // don't callback.
-							}
-							if (r->req->reqType == SM_REQUEST_DESTROY) {
-								delete hdl->req;
-								hdl->req = NULL;
-							}
-							SM_FREE(hdl);
-							r->status = SM_ERROR_NONE;
-							continue;
-						}
-						r->status = SM_ERROR_OPERATION_FAILED;
 						write_response(s, (sm_request *) sd.rHandle);
 						continue;
 					} else {
-						SM_INF("Request Object is Null.");
+						GW_INF("Request Object is Null.");
 						continue;
 					}
 				}
 			}
 		}
 		if (rc == 0) {
-			if (s->reqSock[0] > 0) {
-				SM_INF("Select Timeout %d", s->reqSock[0]);
+			if (s->reqsock[0] > 0) {
+				GW_INF("Select Timeout %d", s->reqsock[0]);
 			} else {
-				SM_INF("Session closed.");
+				GW_INF("Session closed.");
 				break;
 			}
 		}
 	}
-	SM_INF("Exiting thread.");
+	GW_INF("Exiting thread.");
 	pthread_exit (NULL);
 	return NULL;
 }
 
 const char * getRestUrl(RequestType type) {
 	switch (type) {
-		case SM_REQUEST_TEST:{
-			SM_INF("URL = %s", PROPGET(RVIURL).c_str());
+		case GW_REQ_TEST:{
+			GW_INF("URL = %s", PROPGET(RVIURL).c_str());
 			return PROPGET(RVIURL).c_str();
 		}
 	}
@@ -397,47 +372,46 @@ sm_request *request_alloc_handle(sm_session_handle sHandle, RequestType type,
 	if (!sHandle)
 		return NULL;
 	sm_request *r = NULL;
-	SM_CALLOC(r, 1, sm_request);
+	GW_CALLOC(r, 1, sm_request);
 	r->req = new request(type);
 	r->pCallback = pCallback;
 	r->sHandle = sHandle;
-	SM_INF("Allocated New Request Handle %p", r);
+	GW_INF("Allocated New Request Handle %p", r);
 	return r;
 }
 
 sm_error sm_destroy_session(sm_session_handle sHandle) {
 	if (!sHandle) {
-		return SM_ERROR_INVALID_PARAMETER;
+		return GW_ERROR_INVALID_PARAMETER;
 	}
 	eina_shutdown();
 	sm_session *s = (sm_session *) (sHandle);
 	sm_request r;
-	r.req = new request(SM_REQUEST_SESSION_CLOSE);
+	r.req = new request(GW_REQ_SESSION_CLOSE);
 	r.sHandle = sHandle;
 	sm_start_request((sm_request_handle) &r);
-	SM_INF("Waiting on pthread_join");
+	GW_INF("Waiting on pthread_join");
 	int ret = pthread_join(s->thread, NULL);
-	close(s->reqSock[0]);
-	close(s->reqSock[1]);
-	close(s->respSock[0]);
-	close(s->respSock[1]);
-	s->reqSock[0] = -2;
-	s->reqSock[1] = -2;
-	s->respSock[0] = -2;
-	s->respSock[1] = -2;
-	curl_multi_cleanup(s->mh);
-	SM_INF("Output of pthread_join = %d", ret);
+	close(s->reqsock[0]);
+	close(s->reqsock[1]);
+	close(s->ressock[0]);
+	close(s->ressock[1]);
+	s->reqsock[0] = -2;
+	s->reqsock[1] = -2;
+	s->ressock[0] = -2;
+	s->ressock[1] = -2;
+	GW_INF("Output of pthread_join = %d", ret);
 	properties::removeInstance();
 	if (s) {
-		SM_FREE(s);
+		GW_FREE(s);
 		s = NULL;
 	}
-	return SM_ERROR_NONE;
+	return GW_ERROR_NONE;
 }
 
 sm_request_handle sm_create_test(sm_session_handle sHandle,
 		request_complete_cb pCallback) {
-	sm_request *r = request_alloc_handle(sHandle, SM_REQUEST_TEST, pCallback);
+	sm_request *r = request_alloc_handle(sHandle, GW_REQ_TEST, pCallback);
 	eina_strbuf_append(r->req->url, getRestUrl(r->req->reqType)); //main url
 	return (sm_request_handle) r;
 }
@@ -445,9 +419,9 @@ sm_request_handle sm_create_test(sm_session_handle sHandle,
 sm_error sm_set_request_appdata(sm_request_handle rHandle, void *appdata) {
 	if (rHandle) {
 		((sm_request *) rHandle)->appdata = appdata;
-		return SM_ERROR_NONE;
+		return GW_ERROR_NONE;
 	}
-	return SM_ERROR_INVALID_PARAMETER;
+	return GW_ERROR_INVALID_PARAMETER;
 }
 
 void * sm_get_request_appdata(sm_request_handle rHandle) {
@@ -457,40 +431,19 @@ void * sm_get_request_appdata(sm_request_handle rHandle) {
 	return NULL;
 }
 
-sm_error sm_cancel_request(sm_request_handle rHandle, int call_callback_func) {
-	if (!rHandle) {
-		return SM_ERROR_INVALID_PARAMETER;
-	}
-	sm_request *req = (sm_request *) rHandle;
-	sm_request *r = request_alloc_handle(req->sHandle, SM_REQUEST_CANCEL, NULL);
-	sm_set_request_appdata(r, rHandle);
-	return sm_start_request(r);
-}
-
-sm_error sm_destroy_request(sm_request_handle rHandle) {
-	if (!rHandle) {
-		return SM_ERROR_INVALID_PARAMETER;
-	}
-	sm_request *req = (sm_request *) rHandle;
-	sm_request *r = request_alloc_handle(req->sHandle, SM_REQUEST_DESTROY,
-			NULL);
-	sm_set_request_appdata(r, rHandle);
-	return sm_start_request(r);
-}
-
 sm_error sm_start_request(sm_request_handle rHandle) {
 	if (!rHandle) {
-		SM_INF("Invalid Request Handle");
-		return SM_ERROR_INVALID_REQUEST_HANDLE;
+		GW_INF("Invalid Request Handle");
+		return GW_ERROR_INVALID_REQUEST_HANDLE;
 	}
 	sm_request *r = (sm_request *) rHandle;
-	SM_INF("Performing Request %d", r->req->reqType);
+	GW_INF("Performing Request %d", r->req->reqType);
 	Eina_Bool ret;
 	r->req->url_con = ecore_con_url_custom_new("http://localhost:9001/",
 			"POST");
 	if (!r->req->url_con) {
 		printf("error when creating ecore con url object.\n");
-		return SM_ERROR_REQUEST_CREATION_FAILED;
+		return GW_ERROR_REQUEST_CREATION_FAILED;
 	}
 
 	ecore_event_handler_add(ECORE_CON_EVENT_URL_DATA, _url_data_cb, r);
@@ -500,49 +453,68 @@ sm_error sm_start_request(sm_request_handle rHandle) {
 	if (!ret) {
 		printf("could not realize request.\n");
 	}
-	SM_INF("Request Completed %d", ret);
-	return SM_ERROR_NONE;
+	GW_INF("Request Completed %d", ret);
+	return GW_ERROR_NONE;
 }
 
 sm_session_handle sm_create_session(const char *rvi) {
 	sm_session *session = NULL;
-	SM_CALLOC(session, 1, sm_session);
+	GW_CALLOC(session, 1, sm_session);
 	properties::getInstance()->load();
 
-	SM_INF("Creating session object RVI =%s", rvi);
+	GW_INF("Creating session object RVI =%s", rvi);
 
-	int ret = pipe(session->reqSock);
-	ret &= pipe(session->respSock);
+	int ret = pipe(session->reqsock);
+	ret &= pipe(session->ressock);
+
+	// for oic client
+	ret &= pipe(session->creqsock);
+	ret &= pipe(session->cressock);
+
+	// for oic server
+	ret &= pipe(session->sreqsock);
+	ret &= pipe(session->sressock);
 
 	if (!ret) {
 		//create a thread to handle this session.
-		ret = pthread_create(&session->thread, NULL, session_thread, session);
-		//ret = pthread_create(&session->client, NULL, client_thread, session);
-		//ret = pthread_create(&session->server, NULL, server_thread, session);
+		//ret = pthread_create(&session->thread, NULL, session_thread, session);
+		ret =  pthread_create(&session->client, NULL, client_thread, session);
+		ret &= pthread_create(&session->server, NULL, server_thread, session);
 
 		if (ret) {
-			SM_INF("Session Creation Failure = %d", ret);
-			close(session->reqSock[0]);
-			close(session->reqSock[1]);
-			close(session->respSock[0]);
-			close(session->respSock[1]);
-			SM_FREE(session);
+			GW_INF("Session Creation Failure = %d", ret);
+			close(session->reqsock[0]);
+			close(session->reqsock[1]);
+			close(session->ressock[0]);
+			close(session->ressock[1]);
+
+			close(session->creqsock[0]);
+			close(session->creqsock[1]);
+			close(session->cressock[0]);
+			close(session->cressock[1]);
+
+			close(session->sreqsock[0]);
+			close(session->sreqsock[1]);
+			close(session->sressock[0]);
+			close(session->sressock[1]);
+
+			GW_FREE(session);
 			return NULL;
 		}
 
 		properties::setSessionReference((void *) session);
 		properties::getInstance()->save();
 
-		SM_INF("Returning Session Object %p", session);
+		GW_INF("Returning Session Object %p", session);
 		return session;
 	}
-	SM_FREE(session);
+	GW_FREE(session);
 
 	return NULL;
 }
 sm_error sm_start_session(sm_session_handle sHandle) {
 	sm_notify_session_response(sHandle);
-	return SM_ERROR_NONE;
+	return GW_ERROR_NONE;
 }
 
 int main(int argc, const char *argv[]) {
@@ -554,7 +526,7 @@ int main(int argc, const char *argv[]) {
 
 	sm_session_handle session = sm_create_session("http://localhost:9091/");
 	sm_start_session(session);
-	SM_INF("session created");
+	GW_INF("session created");
 
 	sm_request_handle h = sm_create_test(session, complete_cb);
 	sm_start_request(h);

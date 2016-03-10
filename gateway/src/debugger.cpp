@@ -11,7 +11,7 @@ debugger * debugger::getInstance(){
 debugger::debugger(){
     eina_init();
     eet_init();
-    logDomain = eina_log_domain_register("gateway", EINA_COLOR_CYAN);
+    logDomain = eina_log_domain_register("ocfgw", EINA_COLOR_CYAN);
     if(logDomain<0)
         logDomain = EINA_LOG_DOMAIN_GLOBAL;
     FILE *fp = fopen("/tmp/logger.log", "w");

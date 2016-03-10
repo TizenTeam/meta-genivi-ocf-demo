@@ -20,10 +20,10 @@ void properties::removeInstance()
         gproperties->save();
         delete gproperties;
         gproperties = NULL;
-        SM_INF("properties removed");
+        GW_INF("properties removed");
         return;
     }
-    SM_INF("properties NOT removed");
+    GW_INF("properties NOT removed");
 }
 
 properties * properties::getInstance()
@@ -46,7 +46,7 @@ bool properties::save(void)
     {
         for (map<string,string>::iterator it=sessionInfo.begin(); it!=sessionInfo.end(); ++it)
         {
-            SM_INF("Saving %s => %s", it->first.c_str(), it->second.c_str());
+            GW_INF("Saving %s => %s", it->first.c_str(), it->second.c_str());
             sprintf(buffer1, "%s=%s\n", it->first.c_str(), it->second.c_str());
             fprintf(fp, "%s", buffer1);
         }
@@ -66,15 +66,15 @@ bool properties::load()
     if(ret!=0)
     {
         if(errno==EEXIST){
-            SM_INF("Cache location exists. Reusing properties");
+            GW_INF("Cache location exists. Reusing properties");
         }else{
-            SM_INF("Cache Location Cannot be created - caching will be disabled.");
+            GW_INF("Cache Location Cannot be created - caching will be disabled.");
             return true;
         }
     }
     else
     {
-        SM_INF("Cache Location Created. Caching Enabled.");
+        GW_INF("Cache Location Created. Caching Enabled.");
         return true;
     }
 
@@ -91,7 +91,7 @@ bool properties::load()
         size = ftell(fp);
         rewind(fp);
         int rest = fread(&contents[0], 1, size, fp);
-        SM_INF("Output of fread = %d", rest);
+        GW_INF("Output of fread = %d", rest);
         fclose(fp);
     }
     else
@@ -122,7 +122,7 @@ bool properties::load()
                     continue;
                 }
             } else if (count <= 4) {
-                SM_INF("Invalid Unicode sequence: illegal character");
+                GW_INF("Invalid Unicode sequence: illegal character");
                 return false;
             }
             mode = NONE;
@@ -202,7 +202,7 @@ bool properties::load()
                         key = kvString.substr(0, keyLength);
                         //printf("1. KVP %s - %s", key.c_str(), value.c_str());
                         value = kvString.substr(keyLength, (offset-keyLength));
-                        SM_INF("1. KVP %s=%s", key.c_str(), value.c_str());
+                        GW_INF("1. KVP %s=%s", key.c_str(), value.c_str());
                         sessionInfo[key] = value;
                         kvString.clear();
                     }
@@ -259,7 +259,7 @@ bool properties::load()
         ret++;
     }
     if (mode == UNICODE && count <= 4) {
-        SM_INF("Invalid Unicode sequence: expected format \\uxxxx");
+        GW_INF("Invalid Unicode sequence: expected format \\uxxxx");
         return false;
     }
     if (keyLength == -1 && offset > 0) {
@@ -274,12 +274,12 @@ bool properties::load()
         if (mode == SLASH) {
             //value.Append("\u0000");
         }
-        SM_INF("2. KVP %s=%s", key.c_str(), value.c_str());
+        GW_INF("2. KVP %s=%s", key.c_str(), value.c_str());
         sessionInfo[key] = value;
         kvString.clear();
     }
-    SM_INF("Total Number of Objects Read %d", (int)sessionInfo.size());
-    SM_INF("Cache Location = %s", get(CACHELOCATION).c_str());
+    GW_INF("Total Number of Objects Read %d", (int)sessionInfo.size());
+    GW_INF("Cache Location = %s", get(CACHELOCATION).c_str());
     return true;
 }
 

@@ -28,6 +28,7 @@
 #include <condition_variable>
 #include "OCPlatform.h"
 #include "OCApi.h"
+#include "gateway.h"
 
 using namespace OC;
 
@@ -370,39 +371,47 @@ void *client_thread(void *data)
     };
 
     OCPlatform::Configure(cfg);
-    try
-    {
-        // makes it so that all boolean values are printed as 'true/false' in this stream
-        std::cout.setf(std::ios::boolalpha);
-        // Find all resources
-        requestURI << OC_RSRVD_WELL_KNOWN_URI;// << "?rt=core.light";
 
-        OCPlatform::findResource("", requestURI.str(),
-                CT_DEFAULT, &foundResource);
-        std::cout<< "Finding Resource... " <<std::endl;
+	sm_session *s = (sm_session *) data;
+	session_data sd;
+	fd_set R, W, X;
+	int rc = 0;
 
-        // Find resource is done twice so that we discover the original resources a second time.
-        // These resources will have the same uniqueidentifier (yet be different objects), so that
-        // we can verify/show the duplicate-checking code in foundResource(above);
-        OCPlatform::findResource("", requestURI.str(),
-                CT_DEFAULT, &foundResource);
-        std::cout<< "Finding Resource for second time..." << std::endl;
+	GW_INF("Creating OCF Client thread %p", s);
+	FD_ZERO(&R);
+	FD_ZERO(&W);
+	FD_ZERO(&X);
+	FD_SET(s->creqsock[0], &R);
+	int max_sd = s->creqsock[0];
 
-        // A condition variable will free the mutex it is given, then do a non-
-        // intensive block until 'notify' is called on it.  In this case, since we
-        // don't ever call cv.notify, this should be a non-processor intensive version
-        // of while(true);
-        std::mutex blocker;
-        std::condition_variable cv;
-        std::unique_lock<std::mutex> lock(blocker);
-        cv.wait(lock);
-
-    }catch(OCException& e)
-    {
-        oclog() << "Exception in main: "<<e.what();
-    }
-
+	 //wait for request, indefinitely
+	while (true) {
+		GW_INF("OIC Client Waiting");
+		rc = select(max_sd + 1, &R, &W, &X, NULL);
+		//process the OCF Client Request
+		if (rc > 0) {
+			bool isAppReq = FD_ISSET(s->creqsock[0], &R);
+			if (isAppReq) {
+				int sock = s->creqsock[0];
+				GW_INF("MAX FD IS SET max_sd = %d", max_sd);
+				int bytes = read(sock, &sd, sizeof(session_data));
+				GW_INF("Read Request Size = %d....waiting", bytes);
+				if (bytes > 0) {
+					sm_request *r = (sm_request *) sd.rHandle;
+					try
+					{
+						std::cout.setf(std::ios::boolalpha);
+						requestURI << OC_RSRVD_WELL_KNOWN_URI;// << "?rt=core.light";
+						OCPlatform::findResource("", requestURI.str(),
+								CT_DEFAULT, &foundResource);
+						std::cout<< "Finding Resource... " <<std::endl;
+					}catch(OCException& e)
+					{
+						oclog() << "Exception in main: "<<e.what();
+					}
+				}
+			}
+		}
+	}
     return 0;
 }
-
-

@@ -27,12 +27,12 @@ class properties {
         static void *session;
 
         properties() {
-            SM_INF("properties Constructor Invoked.");
+            GW_INF("properties Constructor Invoked.");
             pthread_mutex_init(&propmutex, NULL);
         }
 
         ~properties(){
-            SM_INF("properties Destructor Invoked.");
+            GW_INF("properties Destructor Invoked.");
             pthread_mutex_destroy(&propmutex);
             sessionInfo.clear();
         }
@@ -61,9 +61,9 @@ class properties {
         			sessionInfo[key] = value;
         		}
         		pthread_mutex_unlock (&propmutex);
-                SM_INF("SETSESSIONINFO : %s = %s\n", key.c_str(), sessionInfo[key].c_str());
+                GW_INF("SETSESSIONINFO : %s = %s\n", key.c_str(), sessionInfo[key].c_str());
             }else{
-                SM_INF("SETSESSIONINFO : %s = Invalid Value\n", key.c_str());
+                GW_INF("SETSESSIONINFO : %s = Invalid Value\n", key.c_str());
             }
         }
 
