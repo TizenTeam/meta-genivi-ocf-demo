@@ -19,10 +19,10 @@ void properties::removeInstance()
         gproperties->save();
         delete gproperties;
         gproperties = NULL;
-        fprintf(stdout,"properties removed");
+        fprintf(stdout,"properties removed\n");
         return;
     }
-    fprintf(stdout,"properties NOT removed");
+    fprintf(stdout,"properties NOT removed\n");
 }
 
 properties * properties::getInstance()
@@ -65,15 +65,15 @@ bool properties::load()
     if(ret!=0)
     {
         if(errno==EEXIST){
-            fprintf(stdout,"Cache location exists. Reusing properties");
+            fprintf(stdout,"Reusing properties\n");
         }else{
-            fprintf(stdout,"Cache Location Cannot be created - caching will be disabled.");
+            fprintf(stdout,"Cache Location Cannot be created - caching will be disabled.\n");
             return true;
         }
     }
     else
     {
-        fprintf(stdout,"Cache Location Created. Caching Enabled.");
+        fprintf(stdout,"Caching Enabled.\n");
         return true;
     }
 
@@ -90,7 +90,7 @@ bool properties::load()
         size = ftell(fp);
         rewind(fp);
         int rest = fread(&contents[0], 1, size, fp);
-        fprintf(stdout,"Output of fread = %d", rest);
+        fprintf(stdout,"Output of fread = %d\n", rest);
         fclose(fp);
     }
     else
@@ -121,7 +121,7 @@ bool properties::load()
                     continue;
                 }
             } else if (count <= 4) {
-                fprintf(stdout,"Invalid Unicode sequence: illegal character");
+                fprintf(stdout,"Invalid Unicode sequence: illegal character\n");
                 return false;
             }
             mode = NONE;
@@ -201,7 +201,7 @@ bool properties::load()
                         key = kvString.substr(0, keyLength);
                         //printf("1. KVP %s - %s", key.c_str(), value.c_str());
                         value = kvString.substr(keyLength, (offset-keyLength));
-                        fprintf(stdout,"1. KVP %s=%s", key.c_str(), value.c_str());
+                        fprintf(stdout,"1. KVP %s=%s\n", key.c_str(), value.c_str());
                         sessionInfo[key] = value;
                         kvString.clear();
                     }
@@ -258,7 +258,7 @@ bool properties::load()
         ret++;
     }
     if (mode == UNICODE && count <= 4) {
-        fprintf(stdout,"Invalid Unicode sequence: expected format \\uxxxx");
+        fprintf(stdout,"Invalid Unicode sequence: expected format \\uxxxx\n");
         return false;
     }
     if (keyLength == -1 && offset > 0) {
@@ -273,12 +273,12 @@ bool properties::load()
         if (mode == SLASH) {
             //value.Append("\u0000");
         }
-        fprintf(stdout,"2. KVP %s=%s", key.c_str(), value.c_str());
+        fprintf(stdout,"2. KVP %s=%s\n", key.c_str(), value.c_str());
         sessionInfo[key] = value;
         kvString.clear();
     }
-    fprintf(stdout,"Total Number of Objects Read %d", (int)sessionInfo.size());
-    fprintf(stdout,"Cache Location = %s", get(CACHELOCATION).c_str());
+    fprintf(stdout,"Total Number of Objects Read %d\n", (int)sessionInfo.size());
+    fprintf(stdout,"Cache Location = %s\n", get(CACHELOCATION).c_str());
     return true;
 }
 

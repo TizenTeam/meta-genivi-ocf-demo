@@ -19,6 +19,15 @@ RESTAPI restapi[GW_REQ_MAX + 1] = {
 	{ "REQ_MAX", "Max", ""}
 };
 
+void print_choices()
+{
+	fprintf(stdout, "RVI OIC Gateway Option\n");
+	fprintf(stdout, "----------------------\n");
+	fprintf(stdout, "1. Test API\n");
+	fprintf(stdout, "2. Shutdown Gateway\n");
+}
+
+
 void complete_cb(sm_request_handle rHandle, void *data) {
 	fprintf(stdout,"[RESPONSE_CALLBACK]");
 	int next = 0;
@@ -282,6 +291,7 @@ _url_complete_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 			printParsedList(jsonList,level);
 		}
 	}
+	print_choices();
 	return EINA_TRUE;
 }
 
@@ -330,6 +340,9 @@ static void *session_thread(void *data) {
 				if (bytes > 0) {
 					sm_request *r = (sm_request *) sd.rHandle;
 					fprintf(stdout,"Processing request type = %d\n", r->req->reqType);
+
+
+
 					if (r->req->reqType == GW_REQ_SESSION_CLOSE) {
 						fprintf(stdout,"Closing the session thread. %p\n", s);
 						pthread_exit (NULL);
@@ -382,6 +395,25 @@ sm_request *request_alloc_handle(sm_session_handle sHandle, RequestType type,
 	return r;
 }
 
+
+void close_sockets(sm_session_handle sHandle) {
+	sm_session *s = (sm_session *) (sHandle);
+	close(s->reqsock[0]);
+	close(s->reqsock[1]);
+	close(s->ressock[0]);
+	close(s->ressock[1]);
+
+	close(s->creqsock[0]);
+	close(s->creqsock[1]);
+	close(s->cressock[0]);
+	close(s->cressock[1]);
+
+	close(s->sreqsock[0]);
+	close(s->sreqsock[1]);
+	close(s->sressock[0]);
+	close(s->sressock[1]);
+}
+
 sm_error sm_destroy_session(sm_session_handle sHandle) {
 	if (!sHandle) {
 		return GW_ERROR_INVALID_PARAMETER;
@@ -394,14 +426,7 @@ sm_error sm_destroy_session(sm_session_handle sHandle) {
 	sm_start_request((sm_request_handle) &r);
 	fprintf(stdout,"Waiting on pthread_join");
 	int ret = pthread_join(s->thread, NULL);
-	close(s->reqsock[0]);
-	close(s->reqsock[1]);
-	close(s->ressock[0]);
-	close(s->ressock[1]);
-	s->reqsock[0] = -2;
-	s->reqsock[1] = -2;
-	s->ressock[0] = -2;
-	s->ressock[1] = -2;
+	close_sockets(s);
 	fprintf(stdout,"Output of pthread_join = %d\n", ret);
 	properties::removeInstance();
 	if (s) {
@@ -459,25 +484,46 @@ sm_error sm_start_request(sm_request_handle rHandle) {
 	return GW_ERROR_NONE;
 }
 
-sm_error sm_start_session(sm_session_handle sHandle) {
-	int fd = -1;
-	if (sHandle) {
-		fprintf(stdout,"Response Socket = %d\n", ((sm_session * )sHandle)->ressock[0]);
-		fd = ((sm_session *) sHandle)->ressock[0];
-	} else {
-		fprintf(stdout,"Session Invalid.");
-		return GW_ERROR_NETWORK_INIT_FAILURE;
+static Eina_Bool _cli_handler_cb(void *data, Ecore_Fd_Handler *handler) {
+	   char buf[10];
+	   size_t nbytes;
+	   int fd;
+	   if (ecore_main_fd_handler_active_get(handler, ECORE_FD_ERROR))
+	     {
+	        printf("An error has occurred. Stop watching this fd and quit.\n");
+	        ecore_main_loop_quit();
+	        return ECORE_CALLBACK_CANCEL;
+	     }
+	   fd = ecore_main_fd_handler_fd_get(handler);
+	   nbytes = read(fd, buf, sizeof(buf));
+	   if (nbytes == 0)
+	     {
+	        printf("Nothing to read, exiting...\n");
+	        ecore_main_loop_quit();
+	        return ECORE_CALLBACK_CANCEL;
+	     }
+	   buf[nbytes - 1] = '\0';
+	   printf("Read %zd bytes from input: \"%s\"\n", nbytes - 1, buf);
+	int input = -1;
+	sm_session *session = data;
+	input = atoi(buf);
+	fprintf(stdout,"Size read = %d Executing CLI Command : %d\n", nbytes, input);
+
+	switch(input-1)
+	{
+		case GW_REQ_TEST:
+		{
+			sm_request_handle h = sm_create_test(session, complete_cb);
+			sm_start_request(h);
+		}
+		break;
 	}
-	if (ecore_main_fd_handler_add(fd,
-			(Ecore_Fd_Handler_Flags)(ECORE_FD_READ | ECORE_FD_ERROR),
-			_fd_handler_cb, NULL, NULL, NULL))
-		return GW_ERROR_NONE;
-	else
-		return GW_ERROR_NETWORK_INIT_FAILURE;
-	return GW_ERROR_NONE;
+
+	return ECORE_CALLBACK_RENEW;
 }
 
 int main(int argc, const char *argv[]) {
+	int ret = 0;
 	ecore_init();
 	ecore_con_init();
 	ecore_con_url_init();
@@ -489,54 +535,38 @@ int main(int argc, const char *argv[]) {
 	sm_session *session = NULL;
 	GW_CALLOC(session, 1, sm_session);
 
-	int ret = pipe(session->reqsock);
-	ret &= pipe(session->ressock);
+	ecore_main_fd_handler_add(STDIN_FILENO, ECORE_FD_READ,
+						_cli_handler_cb, session, NULL, NULL);
 
+
+	ret  = pipe(session->reqsock);
+	ret &= pipe(session->ressock);
 	// for oic client
 	ret &= pipe(session->creqsock);
 	ret &= pipe(session->cressock);
-
 	// for oic server
 	ret &= pipe(session->sreqsock);
 	ret &= pipe(session->sressock);
 
 	if (!ret) {
-		//create a thread to handle this session.
-		//ret = pthread_create(&session->thread, NULL, session_thread, session);
 		//ret =  pthread_create(&session->client, NULL, client_thread, session);
 		//ret &= pthread_create(&session->server, NULL, server_thread, session);
-
 		if (ret) {
 			fprintf(stdout,"Session Creation Failure = %d\n", ret);
-			close(session->reqsock[0]);
-			close(session->reqsock[1]);
-			close(session->ressock[0]);
-			close(session->ressock[1]);
-
-			close(session->creqsock[0]);
-			close(session->creqsock[1]);
-			close(session->cressock[0]);
-			close(session->cressock[1]);
-
-			close(session->sreqsock[0]);
-			close(session->sreqsock[1]);
-			close(session->sressock[0]);
-			close(session->sressock[1]);
-
-			//GW_FREE(session);
 			return -1;
 		}
 		fprintf(stdout,"Returning Session Object %p\n", session);
 	}
+	ecore_main_fd_handler_add(session->ressock[0],
+				(Ecore_Fd_Handler_Flags)(ECORE_FD_READ | ECORE_FD_ERROR),
+				_fd_handler_cb, NULL, NULL, NULL);
 
-	sm_request_handle h = sm_create_test(session, complete_cb);
-	sm_start_request(h);
+	print_choices();
 
 	ecore_main_loop_begin();
 	ecore_con_url_shutdown();
 	ecore_con_shutdown();
 	ecore_shutdown();
 	//sm_destroy_session(session);
-
 	return 0;
 }
