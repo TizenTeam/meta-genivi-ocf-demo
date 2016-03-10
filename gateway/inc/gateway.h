@@ -2,7 +2,6 @@
 #define	GATEWAY_H
 
 #include "defines.h"
-#include "debugger.h"
 #include "properties.h"
 
 using namespace std;
@@ -68,9 +67,9 @@ class response {
                 eina_strbuf_free(responseData);
                 EINA_STRBUF_FREE(url);
                 responseData = NULL;
-                GW_INF("Response Data Released.");
+                fprintf(stdout,"Response Data Released.");
             }
-            GW_INF("--------------Finished Freeing response Memory---------------");
+            fprintf(stdout,"--------------Finished Freeing response Memory---------------\n");
         }
 
         RequestType reqType;

@@ -1,5 +1,4 @@
 #include "properties.h"
-#include "debugger.h"
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
@@ -20,10 +19,10 @@ void properties::removeInstance()
         gproperties->save();
         delete gproperties;
         gproperties = NULL;
-        GW_INF("properties removed");
+        fprintf(stdout,"properties removed");
         return;
     }
-    GW_INF("properties NOT removed");
+    fprintf(stdout,"properties NOT removed");
 }
 
 properties * properties::getInstance()
@@ -46,7 +45,7 @@ bool properties::save(void)
     {
         for (map<string,string>::iterator it=sessionInfo.begin(); it!=sessionInfo.end(); ++it)
         {
-            GW_INF("Saving %s => %s", it->first.c_str(), it->second.c_str());
+            fprintf(stdout,"Saving %s => %s", it->first.c_str(), it->second.c_str());
             sprintf(buffer1, "%s=%s\n", it->first.c_str(), it->second.c_str());
             fprintf(fp, "%s", buffer1);
         }
@@ -66,15 +65,15 @@ bool properties::load()
     if(ret!=0)
     {
         if(errno==EEXIST){
-            GW_INF("Cache location exists. Reusing properties");
+            fprintf(stdout,"Cache location exists. Reusing properties");
         }else{
-            GW_INF("Cache Location Cannot be created - caching will be disabled.");
+            fprintf(stdout,"Cache Location Cannot be created - caching will be disabled.");
             return true;
         }
     }
     else
     {
-        GW_INF("Cache Location Created. Caching Enabled.");
+        fprintf(stdout,"Cache Location Created. Caching Enabled.");
         return true;
     }
 
@@ -91,7 +90,7 @@ bool properties::load()
         size = ftell(fp);
         rewind(fp);
         int rest = fread(&contents[0], 1, size, fp);
-        GW_INF("Output of fread = %d", rest);
+        fprintf(stdout,"Output of fread = %d", rest);
         fclose(fp);
     }
     else
@@ -122,7 +121,7 @@ bool properties::load()
                     continue;
                 }
             } else if (count <= 4) {
-                GW_INF("Invalid Unicode sequence: illegal character");
+                fprintf(stdout,"Invalid Unicode sequence: illegal character");
                 return false;
             }
             mode = NONE;
@@ -202,7 +201,7 @@ bool properties::load()
                         key = kvString.substr(0, keyLength);
                         //printf("1. KVP %s - %s", key.c_str(), value.c_str());
                         value = kvString.substr(keyLength, (offset-keyLength));
-                        GW_INF("1. KVP %s=%s", key.c_str(), value.c_str());
+                        fprintf(stdout,"1. KVP %s=%s", key.c_str(), value.c_str());
                         sessionInfo[key] = value;
                         kvString.clear();
                     }
@@ -259,7 +258,7 @@ bool properties::load()
         ret++;
     }
     if (mode == UNICODE && count <= 4) {
-        GW_INF("Invalid Unicode sequence: expected format \\uxxxx");
+        fprintf(stdout,"Invalid Unicode sequence: expected format \\uxxxx");
         return false;
     }
     if (keyLength == -1 && offset > 0) {
@@ -274,12 +273,12 @@ bool properties::load()
         if (mode == SLASH) {
             //value.Append("\u0000");
         }
-        GW_INF("2. KVP %s=%s", key.c_str(), value.c_str());
+        fprintf(stdout,"2. KVP %s=%s", key.c_str(), value.c_str());
         sessionInfo[key] = value;
         kvString.clear();
     }
-    GW_INF("Total Number of Objects Read %d", (int)sessionInfo.size());
-    GW_INF("Cache Location = %s", get(CACHELOCATION).c_str());
+    fprintf(stdout,"Total Number of Objects Read %d", (int)sessionInfo.size());
+    fprintf(stdout,"Cache Location = %s", get(CACHELOCATION).c_str());
     return true;
 }
 

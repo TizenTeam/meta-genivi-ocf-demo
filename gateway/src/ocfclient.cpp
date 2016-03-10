@@ -377,7 +377,7 @@ void *client_thread(void *data)
 	fd_set R, W, X;
 	int rc = 0;
 
-	GW_INF("Creating OCF Client thread %p", s);
+	fprintf(stdout,"Creating OCF Client thread %p\n", s);
 	FD_ZERO(&R);
 	FD_ZERO(&W);
 	FD_ZERO(&X);
@@ -386,23 +386,23 @@ void *client_thread(void *data)
 
 	 //wait for request, indefinitely
 	while (true) {
-		GW_INF("OIC Client Waiting");
+		fprintf(stdout,"OIC Client Waiting");
 		rc = select(max_sd + 1, &R, &W, &X, NULL);
 		//process the OCF Client Request
 		if (rc > 0) {
 			bool isAppReq = FD_ISSET(s->creqsock[0], &R);
 			if (isAppReq) {
 				int sock = s->creqsock[0];
-				GW_INF("MAX FD IS SET max_sd = %d", max_sd);
+				fprintf(stdout,"MAX FD IS SET max_sd = %d\n", max_sd);
 				int bytes = read(sock, &sd, sizeof(session_data));
-				GW_INF("Read Request Size = %d....waiting", bytes);
+				fprintf(stdout,"Read Request Size = %d....waiting\n", bytes);
 				if (bytes > 0) {
 					sm_request *r = (sm_request *) sd.rHandle;
 					try
 					{
 						std::cout.setf(std::ios::boolalpha);
 						requestURI << OC_RSRVD_WELL_KNOWN_URI;// << "?rt=core.light";
-						OCPlatform::findResource("", requestURI.str(),
+						OCPlatform::findResource("\n", requestURI.str(),
 								CT_DEFAULT, &foundResource);
 						std::cout<< "Finding Resource... " <<std::endl;
 					}catch(OCException& e)

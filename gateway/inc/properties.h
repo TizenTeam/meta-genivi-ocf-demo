@@ -6,7 +6,6 @@
 #include <map>
 #include <vector>
 #include <stdio.h>
-#include "debugger.h"
 
 using namespace std;
 
@@ -27,12 +26,12 @@ class properties {
         static void *session;
 
         properties() {
-            GW_INF("properties Constructor Invoked.");
+            fprintf(stdout,"properties Constructor Invoked.");
             pthread_mutex_init(&propmutex, NULL);
         }
 
         ~properties(){
-            GW_INF("properties Destructor Invoked.");
+            fprintf(stdout,"properties Destructor Invoked.");
             pthread_mutex_destroy(&propmutex);
             sessionInfo.clear();
         }
@@ -61,9 +60,9 @@ class properties {
         			sessionInfo[key] = value;
         		}
         		pthread_mutex_unlock (&propmutex);
-                GW_INF("SETSESSIONINFO : %s = %s\n", key.c_str(), sessionInfo[key].c_str());
+                fprintf(stdout,"SETSESSIONINFO : %s = %s\n", key.c_str(), sessionInfo[key].c_str());
             }else{
-                GW_INF("SETSESSIONINFO : %s = Invalid Value\n", key.c_str());
+                fprintf(stdout,"SETSESSIONINFO : %s = Invalid Value\n", key.c_str());
             }
         }
 
