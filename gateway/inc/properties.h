@@ -1,6 +1,7 @@
 #ifndef _PROPERTIES_H_
 #define _PROPERTIES_H_
 
+#include <iostream>
 #include <string>
 #include <cstring>
 #include <map>
@@ -45,6 +46,7 @@ class properties {
 
         const string& get(const string& key) {
         	pthread_mutex_lock (&propmutex);
+        	std::cout<<"Key = "<<key<<std::endl;
         	if(sessionInfo.end() == sessionInfo.find(key)){
         		pthread_mutex_unlock (&propmutex);
         		return NULL;

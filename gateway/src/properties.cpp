@@ -56,7 +56,7 @@ bool properties::save(void)
 
 bool properties::load()
 {
-    sessionInfo[CACHELOCATION]="/tmp/sscache";
+    sessionInfo[CACHELOCATION]=".";
     int size = 0;
     int ret = 0;
 
