@@ -549,8 +549,8 @@ int main(int argc, const char *argv[]) {
 	ret &= pipe(session->sressock);
 
 	if (!ret) {
-		//ret =  pthread_create(&session->client, NULL, client_thread, session);
-		//ret &= pthread_create(&session->server, NULL, server_thread, session);
+		ret =  pthread_create(&session->client, NULL, client_thread, session);
+		ret &= pthread_create(&session->server, NULL, server_thread, session);
 		if (ret) {
 			fprintf(stdout,"Session Creation Failure = %d\n", ret);
 			return -1;

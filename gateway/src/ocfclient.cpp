@@ -386,7 +386,7 @@ void *client_thread(void *data)
 
 	 //wait for request, indefinitely
 	while (true) {
-		fprintf(stdout,"OIC Client Waiting");
+		fprintf(stdout,"OIC Client Waiting\n");
 		rc = select(max_sd + 1, &R, &W, &X, NULL);
 		//process the OCF Client Request
 		if (rc > 0) {

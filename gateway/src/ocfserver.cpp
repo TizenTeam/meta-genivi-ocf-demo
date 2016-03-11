@@ -268,7 +268,7 @@ void *server_thread(void *data)
 
 	//wait for request, indefinitely
 	while (true) {
-		fprintf(stdout,"OIC Server Waiting....");
+		fprintf(stdout,"OIC Server Waiting....\n");
 		rc = select(max_sd + 1, &R, &W, &X, NULL);
 		if (rc > 0) {
 			bool isAppReq = FD_ISSET(s->sreqsock[0], &R);
