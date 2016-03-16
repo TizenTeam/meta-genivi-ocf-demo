@@ -3,7 +3,7 @@ RESTful API interface to RVI Local Node.
 For IoTivity 
 ------------
 export OCTBSTACK_LIBS="-L$HOME/GeniviDemo/iotivity/out/linux/x86_64/release -loctbstack -Wl,-rpath=$HOME/GeniviDemo/iotivity/out/linux/x86_64/release"
-export OCTBSTACK_CFLAGS="-I$HOME/GeniviDemo/iotivity/resource/csdk/stack/include -I$HOME/GeniviDemo/iotivity/resource/c_common -I$HOME/GeniviDemo/iotivity/resource/c_common/ocrandom/include"
+export OCTBSTACK_CFLAGS="-I$HOME/GeniviDemo/iotivity/resource/csdk/stack/include -I$HOME/GeniviDemo/iotivity/resource/c_common -I$HOME/GeniviDemo/iotivity/resource/c_common/ocrandom/include -DTCP_ADAPTER -DROUTING_EP"
 
 Android Build for IoTivity
 --------------------------
@@ -25,12 +25,10 @@ sudo apt-get update
 Key Server Error : sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys HEX
 sudo apt-get update
 sudo apt-get install esl-erlang python-jsonrpclib
-cd rvi_core
-make
 
 Quick Test
 ----------
-Pick up deb file from https://github.com/PDXostc/rvi_core/releases
+wget -q0 --no-check-certificate https://github.com/PDXostc/rvi_core/releases/download/v0.5.0/rvi_0.5.0-1ubuntu1_amd64.deb
 sudo dpkg -i rvi_0.5.0-1ubuntu1_amd64.deb
 
 Register an RVI Service
@@ -49,4 +47,7 @@ curl -H "Content-Type: application/json" -X 4,"service_name": "genivi.org/node/1
 
 {"jsonrpc":"2.0", "id":"1", "method": "message", "params":{"timeout":1459388884,"service_name": "genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello","parameters":{"a":"b"}}}
 {"jsonrpc": "2.0","id":"1", "method": "message", "params":{"timeout":1457399092,"service_name": "genivi.org/node/1cb83d66-2b20-449a-a935-b2f030504952/hello","parameters ":{}}}
+
+
+
 
