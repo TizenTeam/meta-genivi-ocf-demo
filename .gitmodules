@@ -7,3 +7,7 @@
 [submodule "Tizen/ekzekuto"]
 	path = Tizen/ekzekuto
 	url = https://github.com/rzr/ekzekuto.git
+[submodule "Tizen/iotivity"]
+	path = Tizen/iotivity
+	url = https://git.tizen.org/cgit/contrib/iotivity.git
+	branch = sandbox/pcoval/latest
