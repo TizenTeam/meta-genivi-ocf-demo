@@ -1,0 +1,3 @@
+[submodule "Tizen/tizen-helper"]
+	path = Tizen/tizen-helper
+	url = https://notabug.org/tizen/tizen-helper
