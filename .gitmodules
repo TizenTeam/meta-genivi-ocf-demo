@@ -11,3 +11,7 @@
 	path = Tizen/iotivity
 	url = https://git.tizen.org/cgit/contrib/iotivity.git
 	branch = sandbox/pcoval/latest
+[submodule "Tizen/mraa"]
+	path = Tizen/mraa
+	url = https://git.tizen.org/cgit/contrib/mraa.git
+	branch = sandbox/pcoval/tizen
