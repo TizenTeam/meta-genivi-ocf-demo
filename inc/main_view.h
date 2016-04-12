@@ -38,4 +38,5 @@ void remove_map_maneuver_overlays();
 
 void set_view_type(MAP_VIEW_MODE type);
 
+void map_region_show(double latitude, double longitude);
 #endif
