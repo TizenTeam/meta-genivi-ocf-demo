@@ -9,5 +9,6 @@
         <privilege>http://tizen.org/privilege/mapservice</privilege>
         <privilege>http://tizen.org/privilege/internet</privilege>
 	<privilege>http://tizen.org/privilege/network.get</privilege>
+	<privilege>http://tizen.org/privilege/location</privilege>
     </privileges>
 </manifest>
