@@ -143,7 +143,12 @@ app_create(void *data)
 
 	create_base_gui(ad);
 
-	// start_location_manager(ad);
+	if (false) start_location_manager(ad);
+
+
+	double lat = 52.165;
+	double lon = -2.21;
+	map_region_show(lon,lat);
 
 	return true;
 }
