@@ -1192,3 +1192,8 @@ MapDirectionView()
 	Evas_Object *map_view_genlist = __create_route_genlist(m_map_view_layout);
 	elm_object_part_content_set(m_map_view_layout, "map_view_genlist", map_view_genlist);
 }
+
+void map_region_show(double latitude, double longitude)
+{
+  elm_map_region_show(m_map_evas_object, latitude, longitude);  
+}
