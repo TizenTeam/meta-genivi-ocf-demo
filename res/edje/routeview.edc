@@ -1,0 +1,268 @@
+/*
+ * Copyright (c) 2014 Samsung Electronics Co., Ltd All Rights Reserved
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+ #define SEARCHBAR_H	96
+ #define SEARCHBOX_H	(SEARCHBAR * 2)
+
+collections {
+	base_scale: 1.8;
+
+   	group {
+		name: "searchbox-entry-layout";
+		images {
+			image: "../res/images/location_01_ic.png" COMP;
+			image: "../res/images/location_02_ic.png" COMP;
+		}
+		parts {
+			part {
+				name: "bg";
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+				}
+			}
+			part {
+				name: "rect-from";
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: 0.0 0.0; offset: 0 0; to: "bg"; }
+					rel2 { relative: 0.0 0.0; offset: 15+46+5 96; to: "bg"; }
+					min: 15+46+5 96;
+					max: 15+46+5 96;
+				}
+			}
+			part {
+				name: "image-from";
+				type: IMAGE;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: 0.0 0.5; offset: 15 -46/2; to: "rect-from"; }
+					rel2 { relative: 0.0 0.5; offset: 15+46 46/2; to: "rect-from"; }
+					min: 46 46;
+					max: 46 46;
+					align: 0.5 0.5;
+					image { normal: "../res/images/location_01_ic.png"; }
+				}
+			}
+			part {
+				name: "entry-from";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					fixed: 1 1;
+					min : 353 96;
+					max : 353 96;
+					rel1 { relative: 1.0 0.0; to: "rect-from";}
+					rel2 { relative: 1.0 1.0; to: "rect-from";}
+					align: 0.0 1.0;
+				}
+			}
+			part {
+				name: "rect-to";
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: 0.0 1.0; to: "rect-from"; }
+					rel2 { relative: 1.0 1.0; offset: 0 96; to: "rect-from"; }
+					min: 15+46+5 96;
+					max: 15+46+5 96;
+				}
+			}
+			part {
+				name: "image-to";
+				type: IMAGE;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					rel1 { relative: 0.0 0.5; offset: 15 -46/2; to: "rect-to"; }
+					rel2 { relative: 0.0 0.5; offset: 15+46 46/2; to: "rect-to"; }
+					min: 46 46;
+					max: 46 46;
+					align: 0.5 0.5;
+					image { normal: "../res/images/location_02_ic.png"; }
+				}
+			}
+			part {
+				name: "entry-to";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					min : 353 96;
+					max : 353 96;
+					fixed: 1 1;
+					rel1 { relative: 1.0 0.0; to: "rect-to";}
+					rel2 { relative: 1.0 1.0; to: "rect-to";}
+					align: 0.0 1.0;
+				}
+			}
+		}
+	}
+
+	group {
+		name: "searchbox-icon-layout";
+		parts {
+			part {
+				name: "bg";
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+				}
+			}
+
+			part {
+				name: "content-icon";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					fixed: 1 1;
+					min : 46 46;
+					state: "default" 0.0;
+					visible: 1;
+					rel1 { relative: 0.0 0.0;}
+					rel2 { relative: 1.0 1.0;}
+					align: 0.6 0.5;
+				}
+			}
+		}
+	}
+
+	group {
+		name: "searchbox-layout";
+		parts {
+			part {
+				name: "bg";
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					color: 0 0 255 255;
+				}
+			}
+
+			part {
+				name: "searchbox-entry";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					fixed: 1 1;
+					min :404+15 192;
+					max :404+15 192;
+					rel1 { relative: 0.0 0.0;}
+					rel2 { relative: 1.0 1.0; offset: -61 0; }
+					align: 0.0 0.0;
+				}
+			}
+
+			part {
+				name: "searchbox-icon";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					fixed: 0 1;
+					min: 46 192;
+					max: 46 192;
+					rel1 { relative: 1.0 0.0; to:"searchbox-entry";}
+					rel2 { relative: 1.0 1.0; to:"bg";}
+					align: 0.0 0.5;
+				}
+			}
+		}
+	}
+
+	group { name: "route-view";
+		parts {
+			part {
+				name: "bg";
+				type: RECT;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 0;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+				}
+			}
+
+			part {
+				name: "searchbar-box";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					fixed: 0 1;
+					min :0 192;
+					rel1 { relative: 0.0 0.0; to:"bg";}
+					//rel2 { relative: 1.0 0.0; to_x:"bg"; to_y:"genlist";}
+					rel2 { relative: 1.0 0.0; to:"bg";}
+					align: 0.0 0.0;
+				}
+			}
+
+			part {
+				name: "genlist";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					color: 0 255 0 255;
+					rel1 { relative: 0.0 1.0; to_x:"bg"; to_y:"searchbar-box";}
+					rel2 { relative: 1.0 1.0; to:"bg";}
+					align: 0.0 0.0;
+				}
+			}
+		}
+	}
+   
+ 	group {
+		name: "transportation_car";
+		images.image: "../res/images/car.png" COMP;
+		parts {
+			part { 
+				name: "image";
+				description {
+				state: "default" 0.0;
+				image.normal: "../res/images/car.png";
+               		      aspect: 1 1;
+               		      aspect_preference: BOTH;
+				}
+			}
+		}
+	}
+} /* end of collections */
+
