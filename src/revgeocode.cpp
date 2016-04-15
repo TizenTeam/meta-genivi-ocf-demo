@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "lbs-maps.h"
 #include "revgeocode.h"
 #include "main_view.h"
