@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "lbs-maps.h"
 #include "place.h"
 #include "main_view.h"
