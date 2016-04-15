@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "lbs-maps.h"
 #include "route.h"
 #include "route_view.h"
