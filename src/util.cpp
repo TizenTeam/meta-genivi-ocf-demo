@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "util.h"
 #include <app.h>
 #include <Evas.h>
