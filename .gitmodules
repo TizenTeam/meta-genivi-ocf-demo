@@ -23,3 +23,7 @@
 	path = Tizen/iotivity-example-mobile-2.4
 	url = http://github.com/TizenTeam/iotivity-example.git
 	branch = sandbox/pcoval/tizen/mobile-2.4
+[submodule "Tizen/IotivityMaps"]
+	path = Tizen/IotivityMaps
+	url = http://git.projects.genivi.org/meta-genivi-ocf-demo.git
+	branch = sandbox/pcoval/wip/maps/tizen/mobile-2.4
