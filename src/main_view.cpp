@@ -1,3 +1,4 @@
+#include "config.h"
 #include <Evas.h>
 #include <Ecore.h>
 #include <efl_extension.h>
@@ -1193,7 +1194,10 @@ MapDirectionView()
 	elm_object_part_content_set(m_map_view_layout, "map_view_genlist", map_view_genlist);
 }
 
-void map_region_show(double latitude, double longitude)
+void map_region_show(double lon, double lat)
 {
-  elm_map_region_show(m_map_evas_object, latitude, longitude);  
+	ecore_thread_main_loop_begin();
+	elm_map_region_show(m_map_evas_object, lon, lat);
+	ecore_thread_main_loop_end();
+
 }
