@@ -1,16 +1,21 @@
+#include "config.h"
+
 #include <tizen.h>
 #include <locations.h>
 
 #include "lbs-maps.h"
 #include "main_view.h"
 #include "search_view.h"
+#include "observer.h"
+#include "config.h"
 
 typedef struct appdata {
 	Evas_Object *win;
 	Evas_Object *layout;
 	Evas_Object *conform;
 	Evas_Object *nf;
-  location_manager_s* manager;
+	location_manager_s *manager;
+	Ecore_Thread *thread;
 } appdata_s;
 
 
@@ -130,25 +135,84 @@ create_base_gui(appdata_s *ad)
 
 }
 
+static void end_func(void *data, Ecore_Thread *thread) {
+	appdata_s *ad =  (appdata_s *) data;
+	ad->thread = 0;
+}
+
+static void cancel_func(void *user_data, Ecore_Thread *thread) {
+	appdata_s *ad =  (appdata_s *) user_data;
+	ad->thread = 0;
+}
+
+
+
+static void notify_func(void *data, Ecore_Thread *thread/* __UNUSED__*/,
+		void *msgdata) {
+}
+
+static void heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread) {
+	appdata_s *ad = (appdata_s*) data;
+	ad->thread = thread;
+
+
+	IoTObserver::getInstance()->findResource();
+}
+
+static void eval_cb(void *user_data, Evas_Object *obj, void *event_info) {
+	int status = 0;
+	appdata_s *ad = (appdata_s*) user_data;
+	if (ad->thread == 0) {
+		ad->thread = ecore_thread_feedback_run(heavy_func, notify_func,
+				end_func, cancel_func, ad, EINA_FALSE);
+	} else {
+		if (ad->thread) {
+			status = ecore_thread_cancel(ad->thread);
+			if (status) {
+				ad->thread = 0;
+			}
+		}
+	}
+}
+
+
 static bool
 app_create(void *data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
+
 	/* Hook to take necessary actions before main event loop starts
 	   Initialize UI resources and application's data
 	   If this function returns true, the main loop of application starts
 	   If this function returns false, the application is terminated */
 	appdata_s *ad = (appdata_s *) data;
-
+	ad->thread = 0;
 	create_maps_service_handle();
 
 	create_base_gui(ad);
 
-	if (false) start_location_manager(ad);
+	if (false) {
+		start_location_manager(ad);
+	} else if (false) {
+		double lat = 52.165;
+		double lon = -2.21;
+		map_region_show(lon,lat);
+	}
+
+	int status;
+	if (ad->thread == 0) {
+		ad->thread = ecore_thread_feedback_run(heavy_func, notify_func,
+				end_func, cancel_func, ad, EINA_FALSE);
+	} else {
+		if (ad->thread) {
+			status = ecore_thread_cancel(ad->thread);
+			if (status) {
+				ad->thread = 0;
+			}
+		}
+	}
 
 
-	double lat = 52.165;
-	double lon = -2.21;
-	map_region_show(lon,lat);
 
 	return true;
 }
@@ -157,23 +221,29 @@ static void
 app_control(app_control_h app_control, void *data)
 {
 	/* Handle the launch request. */
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
+
 }
 
 static void
 app_pause(void *data)
 {
 	/* Take necessary actions when application becomes invisible. */
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 }
 
 static void
 app_resume(void *data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 	/* Take necessary actions when application becomes visible. */
 }
 
 static void
 app_terminate(void *data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
+
 	/* Release all resources. */
 	destroy_maps_service_handle();
 }
@@ -181,6 +251,8 @@ app_terminate(void *data)
 static void
 ui_app_lang_changed(app_event_info_h event_info, void *user_data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
+
 	/*APP_EVENT_LANGUAGE_CHANGED*/
 	char *locale = NULL;
 	system_settings_get_value_string(SYSTEM_SETTINGS_KEY_LOCALE_LANGUAGE, &locale);
@@ -192,6 +264,7 @@ ui_app_lang_changed(app_event_info_h event_info, void *user_data)
 static void
 ui_app_orient_changed(app_event_info_h event_info, void *user_data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 	/*APP_EVENT_DEVICE_ORIENTATION_CHANGED*/
 	return;
 }
@@ -199,18 +272,21 @@ ui_app_orient_changed(app_event_info_h event_info, void *user_data)
 static void
 ui_app_region_changed(app_event_info_h event_info, void *user_data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 	/*APP_EVENT_REGION_FORMAT_CHANGED*/
 }
 
 static void
 ui_app_low_battery(app_event_info_h event_info, void *user_data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 	/*APP_EVENT_LOW_BATTERY*/
 }
 
 static void
 ui_app_low_memory(app_event_info_h event_info, void *user_data)
 {
+	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 	/*APP_EVENT_LOW_MEMORY*/
 }
 
