@@ -351,11 +351,16 @@
 							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1114423893" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="org.tizen.nativecore.config.sbi.gcc45.app.debug.24591278.922014338" name="server.cpp" rcbsApplicability="disable" resourcePath="src/server.cpp" toolsToInvoke="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.423964861.1271568182">
+						<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.423964861.1271568182" name="C++ Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.423964861">
+							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1932701280" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="inc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="res"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="shared"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="server.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
