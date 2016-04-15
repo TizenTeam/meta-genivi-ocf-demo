@@ -15,3 +15,11 @@
 	path = Tizen/mraa
 	url = https://git.tizen.org/cgit/contrib/mraa.git
 	branch = sandbox/pcoval/tizen
+[submodule "Tizen/iotivity-example-wearable-2.3.1"]
+	path = Tizen/iotivity-example-wearable-2.3.1
+	url = http://github.com/TizenTeam/iotivity-example.git
+	branch = sandbox/pcoval/tizen/wearable-2.3.1
+[submodule "Tizen/iotivity-example-mobile-2.4"]
+	path = Tizen/iotivity-example-mobile-2.4
+	url = http://github.com/TizenTeam/iotivity-example.git
+	branch = sandbox/pcoval/tizen/mobile-2.4
