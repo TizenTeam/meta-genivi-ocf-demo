@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <Ecore.h>
 #include <dlog.h>
 #include <efl_extension.h>
