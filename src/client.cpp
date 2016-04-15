@@ -191,6 +191,10 @@ void IoTClient::DisplayMenu()
 }
 
 
+#if 1
+#define main client_main
+#endif
+
 int main(int argc, char *argv[])
 {
     IoTClient client;
