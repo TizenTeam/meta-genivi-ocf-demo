@@ -120,26 +120,25 @@ void IoTObserver::discoveredResource(shared_ptr<OCResource> resource)
     }
 }
 
-
-void handleObserve()
+void IoTObserver::handleObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
+		const int &eCode, const int &sequenceNumber)
 {
+	static double lat = 52.165;
+	static double lon = -2.21;
 
-			static double lat = 52.165;
-			static double lon = -2.21;
+	if (rep.hasAttribute("lat")) {
+		lat = rep.getValue<double>("lat");
+	}
+	if (rep.hasAttribute("lon")) {
+		lon = rep.getValue<double>("lon");
+	}
 
-			if (rep.hasAttribute("lat")) {
-				lat = rep.getValue<double>("lat");
-			}
-			if (rep.hasAttribute("lon")) {
-				lon = rep.getValue<double>("lon");
-			}
-
-			dlog_print(DLOG_INFO, LOG_TAG, "location: %f,%f", lat, lon);
-			map_region_show(lon, lat);
+	dlog_print(DLOG_INFO, LOG_TAG, "location: %f,%f", lat, lon);
+	map_region_show(lon, lat);
 }
 
 
-void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepresentation &rep,
+void IoTObserver::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
                             const int &eCode, const int &sequenceNumber)
 {
     cout << __PRETTY_FUNCTION__ << endl;
@@ -162,10 +161,8 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
             rep.getValue( Config::m_key, data);
 
             std::cout << Config::m_key << "=" << data << std::endl;
+            handleObserve(headerOptions, rep, eCode, sequenceNumber);
         }
-
-	handleObserve();
-
         else
         {
             if (sequenceNumber == OC_OBSERVE_NO_OPTION)
