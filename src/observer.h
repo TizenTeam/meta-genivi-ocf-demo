@@ -43,6 +43,9 @@ class IoTObserver
         static void onObserve(const OC::HeaderOptions /*headerOptions*/,
                               const OC::OCRepresentation &rep,
                               const int &eCode, const int &sequenceNumber);
+        static void handleObserve(const OC::HeaderOptions /*headerOptions*/,
+                              const OC::OCRepresentation &rep,
+                              const int &eCode, const int &sequenceNumber);
 
         void findResource();
         IoTObserver();
