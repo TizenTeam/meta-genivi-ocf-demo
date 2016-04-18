@@ -1,5 +1,4 @@
 #!/bin/sh
-#! /usr/bin/make -f
 # //******************************************************************
 # //
 # // Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
@@ -25,7 +24,7 @@ set -x
 
 profile="tizen_2_3_1_wearable"
 version="1.0.1"
-arch="armv7l"
+arch="i586"
 gbsdir="${HOME}/tmp/gbs/tmp-GBS-${profile}-${arch}/"
 rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
 rpmdir="${gbsdir}/local/repos/${profile}_${arch}/${arch}/RPMS/"
