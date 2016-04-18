@@ -32,6 +32,7 @@
 
 int observer_main(int argc, char *argv[]);
 
+
 class IoTObserver
 {
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
