@@ -6,7 +6,6 @@
         <icon>maps.png</icon>
     </ui-application>
     <privileges>
-        <privilege>http://tizen.org/privilege/mapservice</privilege>
         <privilege>http://tizen.org/privilege/network.get</privilege>
         <privilege>http://tizen.org/privilege/location</privilege>
         <privilege>http://tizen.org/privilege/internet</privilege>
