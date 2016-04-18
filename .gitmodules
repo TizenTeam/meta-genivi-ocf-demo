@@ -27,3 +27,7 @@
 	path = Tizen/IotivityMaps
 	url = http://git.projects.genivi.org/meta-genivi-ocf-demo.git
 	branch = sandbox/pcoval/wip/maps/tizen/mobile-2.4
+[submodule "Tizen/IotivityMapsWearable"]
+	path = Tizen/IotivityMapsWearable
+	url = http://git.projects.genivi.org/meta-genivi-ocf-demo.git
+	branch = sandbox/pcoval/wip/maps/tizen/wearable-2.3.1
