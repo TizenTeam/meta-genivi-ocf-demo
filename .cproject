@@ -265,6 +265,23 @@
 							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1904268575" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="org.tizen.nativecore.config.sbi.gcc45.app.debug.1819292245.1667560787" name="/" resourcePath="extra">
+						<toolChain id="org.tizen.nativecore.toolchain.sbi.gcc45.app.debug.732270341" name="Tizen Native Toolchain" superClass="org.tizen.nativecore.toolchain.sbi.gcc45.app.debug" unusedChildren="">
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.700317082" name="Archiver" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.2041575007"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.373145636" name="C++ Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.1295445851"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.c.compiler.642751120" name="C Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.c.compiler.658122425"/>
+							<tool id="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.633384838" name="C Linker" superClass="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.953826003"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.1242190223" name="C++ Linker" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.115357103"/>
+							<tool id="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.1261149231" name="Assembler" superClass="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.165765535"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.1325526914" name="C FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.91427764"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.cpp.842491935" name="C++ FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.cpp.1480847289"/>
+							<tool id="org.tizen.nativecore.tool.ast.454141777" name="C Static Analyzer" superClass="org.tizen.nativecore.tool.ast.182411919"/>
+							<tool id="org.tizen.nativecore.tool.ast.cpp.1042365970" name="C++ Static Analyzer" superClass="org.tizen.nativecore.tool.ast.cpp.1000254162"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.674330112" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.947829254"/>
+							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.1630517808" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler.379455012"/>
+							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1020055606" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler.1904268575"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="inc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="res"/>
@@ -537,6 +554,23 @@
 							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.1396903672" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib"/>
 							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.715290734" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler"/>
 							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.700739456" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler"/>
+						</toolChain>
+					</folderInfo>
+					<folderInfo id="org.tizen.nativecore.config.sbi.gcc45.app.release.436967644.115506798" name="/" resourcePath="extra">
+						<toolChain id="org.tizen.nativecore.toolchain.sbi.gcc45.app.release.882517077" name="Tizen Native Toolchain" superClass="org.tizen.nativecore.toolchain.sbi.gcc45.app.release" unusedChildren="">
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.152833570" name="Archiver" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.2075371111"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.1253986940" name="C++ Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.1139614709"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.c.compiler.851108830" name="C Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.c.compiler.334649752"/>
+							<tool id="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.2085680136" name="C Linker" superClass="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.1797777475"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.501985339" name="C++ Linker" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.1802700032"/>
+							<tool id="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.696508239" name="Assembler" superClass="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.1949163486"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.788121927" name="C FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.598240443"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.cpp.1661901903" name="C++ FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.cpp.338453276"/>
+							<tool id="org.tizen.nativecore.tool.ast.1121768531" name="C Static Analyzer" superClass="org.tizen.nativecore.tool.ast.677366473"/>
+							<tool id="org.tizen.nativecore.tool.ast.cpp.2067875602" name="C++ Static Analyzer" superClass="org.tizen.nativecore.tool.ast.cpp.1531119443"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.1353819852" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.1396903672"/>
+							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.1995725597" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler.715290734"/>
+							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.364961808" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler.700739456"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
@@ -841,6 +875,30 @@
 							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1114423893" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="org.tizen.nativecore.config.sbi.gcc45.app.debug.24591278.2002804718" name="/" resourcePath="extra">
+						<toolChain id="org.tizen.nativecore.toolchain.sbi.gcc45.app.debug.1818634264" name="Tizen Native Toolchain" superClass="org.tizen.nativecore.toolchain.sbi.gcc45.app.debug" unusedChildren="">
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.132868880" name="Archiver" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.870352522"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.775334042" name="C++ Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.423964861">
+								<option defaultValue="false" id="sbi.gnu.cpp.compiler.option.misc.pic.core.2145028138" superClass="sbi.gnu.cpp.compiler.option.misc.pic.core" valueType="boolean"/>
+							</tool>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.c.compiler.1922275593" name="C Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.c.compiler.1167130066">
+								<option defaultValue="false" id="sbi.gnu.c.compiler.option.misc.pic.core.1785319824" superClass="sbi.gnu.c.compiler.option.misc.pic.core" valueType="boolean"/>
+							</tool>
+							<tool id="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.744808674" name="C Linker" superClass="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.314691814"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.930962734" name="C++ Linker" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.2115154335">
+								<option defaultValue="false" id="sbi.gnu.cpp.linker.option.shared_flag.core.1776200262" superClass="sbi.gnu.cpp.linker.option.shared_flag.core" valueType="boolean"/>
+								<option defaultValue="false" id="sbi.gnu.cpp.linker.option.noundefined.core.1440121477" superClass="sbi.gnu.cpp.linker.option.noundefined.core" valueType="boolean"/>
+							</tool>
+							<tool id="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.2078016935" name="Assembler" superClass="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.1064547475"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.1728803136" name="C FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.1216634067"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.cpp.1477633607" name="C++ FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.cpp.405161986"/>
+							<tool id="org.tizen.nativecore.tool.ast.2022659344" name="C Static Analyzer" superClass="org.tizen.nativecore.tool.ast.1113130339"/>
+							<tool id="org.tizen.nativecore.tool.ast.cpp.1207542857" name="C++ Static Analyzer" superClass="org.tizen.nativecore.tool.ast.cpp.1250652921"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.1827288786" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.1101906595"/>
+							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.39995459" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler.804047327"/>
+							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1487136968" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler.1114423893"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="inc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="res"/>
@@ -1139,6 +1197,30 @@
 							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.1512233124" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="org.tizen.nativecore.config.sbi.gcc45.app.release.531788626.71417181" name="/" resourcePath="extra">
+						<toolChain id="org.tizen.nativecore.toolchain.sbi.gcc45.app.release.783724030" name="Tizen Native Toolchain" superClass="org.tizen.nativecore.toolchain.sbi.gcc45.app.release" unusedChildren="">
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.1241311833" name="Archiver" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.1089788427"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.1649136638" name="C++ Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.compiler.1150107660">
+								<option defaultValue="false" id="sbi.gnu.cpp.compiler.option.misc.pic.core.487515500" superClass="sbi.gnu.cpp.compiler.option.misc.pic.core" valueType="boolean"/>
+							</tool>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.c.compiler.483800929" name="C Compiler" superClass="org.tizen.nativecore.tool.sbi.gnu.c.compiler.948299047">
+								<option defaultValue="false" id="sbi.gnu.c.compiler.option.misc.pic.core.1286005260" superClass="sbi.gnu.c.compiler.option.misc.pic.core" valueType="boolean"/>
+							</tool>
+							<tool id="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.685407492" name="C Linker" superClass="org.tizen.nativeide.tool.sbi.gnu.c.linker.base.1183173971"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.1109579882" name="C++ Linker" superClass="org.tizen.nativecore.tool.sbi.gnu.cpp.linker.426915011">
+								<option defaultValue="false" id="sbi.gnu.cpp.linker.option.shared_flag.core.145648492" superClass="sbi.gnu.cpp.linker.option.shared_flag.core" valueType="boolean"/>
+								<option defaultValue="false" id="sbi.gnu.cpp.linker.option.noundefined.core.652032917" superClass="sbi.gnu.cpp.linker.option.noundefined.core" valueType="boolean"/>
+							</tool>
+							<tool id="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.171166279" name="Assembler" superClass="org.tizen.nativeapp.tool.sbi.gnu.assembler.base.749332692"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.1885953423" name="C FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.80465668"/>
+							<tool id="org.tizen.nativecore.tool.fnmapgen.cpp.1427353548" name="C++ FN-Map Generator" superClass="org.tizen.nativecore.tool.fnmapgen.cpp.832416744"/>
+							<tool id="org.tizen.nativecore.tool.ast.2022729083" name="C Static Analyzer" superClass="org.tizen.nativecore.tool.ast.1168800965"/>
+							<tool id="org.tizen.nativecore.tool.ast.cpp.1676658675" name="C++ Static Analyzer" superClass="org.tizen.nativecore.tool.ast.cpp.458605938"/>
+							<tool id="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.2065044999" name="Archive Generator" superClass="org.tizen.nativecore.tool.sbi.gnu.archiver.mergelib.1257449138"/>
+							<tool id="org.tizen.nativecore.tool.sbi.po.compiler.2068395010" name="PO Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.po.compiler.1406204842"/>
+							<tool id="org.tizen.nativecore.tool.sbi.edc.compiler.21694977" name="EDC Resource Compiler" superClass="org.tizen.nativecore.tool.sbi.edc.compiler.1512233124"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="inc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="res"/>
@@ -1155,9 +1237,6 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Multiple configurations">
-			<resource resourceType="PROJECT" workspacePath="/IotivityMaps"/>
-		</configuration>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/IotivityMaps"/>
 		</configuration>
