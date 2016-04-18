@@ -23,6 +23,14 @@
 #include <cstdio>
 
 #include "observer.h"
+#include "main_view.h"
+
+#include "logger.h"
+#include "logger.inl"
+
+
+#include <dlog.h>
+#include <lbs-maps.h>
 
 using namespace std;
 using namespace OC;
@@ -113,6 +121,23 @@ void IoTObserver::discoveredResource(shared_ptr<OCResource> resource)
 }
 
 
+void handleObserve()
+{
+
+			static double lat = 52.165;
+			static double lon = -2.21;
+
+			if (rep.hasAttribute("lat")) {
+				lat = rep.getValue<double>("lat");
+			}
+			if (rep.hasAttribute("lon")) {
+				lon = rep.getValue<double>("lon");
+			}
+
+			dlog_print(DLOG_INFO, LOG_TAG, "location: %f,%f", lat, lon);
+			map_region_show(lon, lat);
+}
+
 
 void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepresentation &rep,
                             const int &eCode, const int &sequenceNumber)
@@ -138,6 +163,9 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
 
             std::cout << Config::m_key << "=" << data << std::endl;
         }
+
+	handleObserve();
+
         else
         {
             if (sequenceNumber == OC_OBSERVE_NO_OPTION)
@@ -160,7 +188,6 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
 
 #if 0
 #define main observer_main
-#endif
 
 
 int main(int argc, char *argv[])
@@ -182,3 +209,4 @@ int main(int argc, char *argv[])
     while (choice != 9);
     return 0;
 }
+#endif
