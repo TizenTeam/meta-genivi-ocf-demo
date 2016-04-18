@@ -44,6 +44,7 @@ distclean: clean
 	rm -f *.wgt
 	rm -rf Debug Release
 	rm -rf .package-stamp .settings .sign
+	rm -rf crash-info SA_Report .sdk_delta.info
 	rm -rf lib usr tmp
 
 clean:
