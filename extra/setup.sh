@@ -1,4 +1,5 @@
 #!/bin/sh
+#! /usr/bin/make -f
 # //******************************************************************
 # //
 # // Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
@@ -22,8 +23,8 @@
 set -e
 set -x
 
-profile="tizen_2_4_mobile"
-version="1.0.0"
+profile="tizen_2_3_1_wearable"
+version="1.0.1"
 arch="armv7l"
 gbsdir="${HOME}/tmp/gbs/tmp-GBS-${profile}-${arch}/"
 rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
@@ -67,7 +68,7 @@ build_()
     $make -C ${package}
     
     package="iotivity"
-    branch="sandbox/pcoval/tizen_2.4"
+    branch="sandbox/pcoval/latest"
     url="https://git.tizen.org/cgit/contrib/${package}.git"
     git clone -b ${branch} ${url}
     $make -C ${package}
@@ -79,12 +80,33 @@ build_()
     $make -C ${package}
 
     package="iotivity-example"
-    url="https://github.com/TizenTeam/${package}"
+    url="https://notabug.org/tizen/${package}"
     branch="tizen"
     git clone -b ${branch} "$url"
     $make -C ${package}
+
 }
 
+
+deploy_()
+{
+
+    ls .tproject || die_ "TODO"
+    
+    rm -rf usr lib
+    mkdir -p usr lib
+
+    unp ${rpmdir}/iotivity-${version}-*.${arch}.rpm
+    unp ${rpmdir}/iotivity-devel-${version}-*${arch}.rpm
+
+    ln -fs ${rootfs}/usr/include/boost usr/include/
+    ln -fs ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so # TODO
+    cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ #TODO might not be needed
+
+    rm -rf lib
+    ln -fs usr/lib lib
+
+}
 
 cat<<EOF
 Check:
@@ -97,3 +119,4 @@ which git || setup_
 
 mkdir -p ${projectdir}/tmp
 cd ${projectdir}/tmp && build_
+cd ${projectdir} && deploy_
