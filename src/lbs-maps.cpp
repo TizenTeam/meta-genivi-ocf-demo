@@ -5,7 +5,6 @@
 
 #include "lbs-maps.h"
 #include "main_view.h"
-#include "search_view.h"
 #include "observer.h"
 #include "config.h"
 
@@ -187,7 +186,6 @@ app_create(void *data)
 	   If this function returns false, the application is terminated */
 	appdata_s *ad = (appdata_s *) data;
 	ad->thread = 0;
-	create_maps_service_handle();
 
 	create_base_gui(ad);
 
@@ -245,7 +243,6 @@ app_terminate(void *data)
 	dlog_print(DLOG_ERROR, LOG_TAG,__PRETTY_FUNCTION__);
 
 	/* Release all resources. */
-	destroy_maps_service_handle();
 }
 
 static void
