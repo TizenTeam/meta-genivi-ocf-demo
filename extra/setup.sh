@@ -116,6 +116,9 @@ EOF
 projectdir=$(pwd)
 which git || setup_
 
-mkdir -p ${projectdir}/tmp
+HOME=${projectdir}/tmp
+export HOME
+mkdir -p ${HOME}
 cd ${projectdir}/tmp && build_
 cd ${projectdir} && deploy_
+rm -rf ${projectdir}/tmp
